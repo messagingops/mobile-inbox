@@ -5,6 +5,7 @@ import messagesRoute from './routes/messages';
 import wavesRoute from './routes/waves';
 import listsRoute from './routes/lists';
 import inboxRoute from './routes/inbox';
+import homeRoute from './routes/home';
 
 const app: Express = express()
 const port = 3000
@@ -16,6 +17,7 @@ app.use('/messages', messagesRoute);
 app.use('/waves', wavesRoute);
 app.use('/lists', listsRoute);
 app.use('/inbox', inboxRoute);
+app.use('/', homeRoute);
 
 
 app.listen(port, () => {
