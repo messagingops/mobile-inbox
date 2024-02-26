@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { signUpUser, signInUser } from './Auth'; // Import the authentication functions
+import { signUpUser, signInUser } from '../firebase/Auth'; // Import the authentication functions
 
 const AuthenticationPage: React.FC = () => {
   const [email, setEmail] = useState('');

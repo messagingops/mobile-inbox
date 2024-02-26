@@ -3,13 +3,13 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ApolloProvider } from '@apollo/client';
 import { client } from './client.tsx';
-import AuthScreen from './AuthScreen'; // Import AuthScreen component
+import AuthScreen from './components/AuthScreen.tsx'; // Import AuthScreen component
 
 export default function App() {
   return (
     <ApolloProvider client={client}>
       <View style={styles.container}>
-        <AuthScreen /> {/* Use AuthScreen component here */}
+        <AuthScreen /> 
         <StatusBar style="auto" />
       </View>
     </ApolloProvider>
