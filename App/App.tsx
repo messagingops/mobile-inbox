@@ -2,8 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ApolloProvider } from '@apollo/client';
-import { client } from './client.tsx';
-import AuthScreen from './components/AuthScreen.tsx'; // Import AuthScreen component
+import { client } from './client';
+import AuthScreen from './components/AuthScreen'; // Import AuthScreen component
 
 export default function App() {
   return (
