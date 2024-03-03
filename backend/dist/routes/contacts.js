@@ -13,158 +13,109 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const axios_1 = __importDefault(require("axios"));
+const apolloClient_1 = __importDefault(require("../apolloClient"));
+const client_1 = require("@apollo/client");
 const router = (0, express_1.Router)();
 router.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
-    const queryText = `mutation createOrUpdateContact(
-    $name: String!,
-    $phoneNumber: String!,
-    $accountPhone: String!,
-    $customFields: [ContactCustomFieldInput]!,
-    $blocked: Boolean!
-  ) {
-    createOrUpdateContact(
-      name: $name,
-      phoneNumber: $phoneNumber,
-      accountPhone: $accountPhone,
-      customFields: $customFields,
-      blocked: $blocked
+    const queryText = (0, client_1.gql) `
+    mutation createOrUpdateContact(
+      $name: String!
+      $phoneNumber: String!
+      $accountPhone: String!
+      $customFields: [ContactCustomFieldInput]!
+      $blocked: Boolean!
     ) {
-      id
-      phoneNumber
-      name
-      mappedNumber
-      createdAt
-      lastUpdatedAt
-      blocked
+      createOrUpdateContact(
+        name: $name
+        phoneNumber: $phoneNumber
+        accountPhone: $accountPhone
+        customFields: $customFields
+        blocked: $blocked
+      ) {
+        id
+        phoneNumber
+        name
+        mappedNumber
+        createdAt
+        lastUpdatedAt
+        blocked
+      }
     }
-  }`;
+  `;
     try {
-        const response = yield axios_1.default.post("https://api.respondflow.com/graphql", {
-            query: queryText,
-            variables: {
-                "name": name,
-                "phoneNumber": phoneNumber,
-                "accountPhone": accountPhone,
-                "customFields": customFields,
-                "blocked": blocked
-            },
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NTIyMDQxMDUsImlhdCI6MTcwOTAwNDEwNSwicGVyIjoiO3JlYWQ6bWVzc2FnZXM7d3JpdGU6bWVzc2FnZXM7cmVhZDp3YXZlczt3cml0ZTp3YXZlcztyZWFkOmNvbnRhY3RzO3dyaXRlOmNvbnRhY3RzIiwib3JnIjo4MDIwfQ.GWTh10uDbJWVyN_SMTXIRzWGqwnT4nPZ20G1nDnUF2k",
-            },
+        const result = yield apolloClient_1.default.mutate({
+            mutation: queryText,
+            variables: { name, phoneNumber, accountPhone, customFields, blocked },
         });
-        res.json(response.data);
+        res.json(result.data);
     }
     catch (error) {
-        console.error("Error:", error);
-        if (error.response && error.response.data && error.response.data.errors) {
-            // Extract error messages
-            const errorMessages = error.response.data.errors.map((err) => err.message);
-            console.error("GraphQL Errors:", errorMessages);
-            // Send error response
-            res.status(500).json({ errors: errorMessages });
-        }
-        else {
-            // Send general error response
-            res.status(500).json({ error: error.message });
-        }
+        console.error("Error creating user:", error);
+        res.status(500).json({ error: "Failed to create user" });
     }
 }));
 router.get("/:primaryPhone/:phoneNumber", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { primaryPhone, phoneNumber } = req.params;
-    const queryText = `query contact(
-      $primaryPhone: String!,
-      $phoneNumber: String!
-    ) {
-      contact(
-        primaryPhone: $primaryPhone,
-        phoneNumber: $phoneNumber
-      ) {
-        name
-        mappedNumber
-        lastUpdatedAt
-        blocked
+    const queryText = (0, client_1.gql) `
+      query contact($primaryPhone: String!, $phoneNumber: String!) {
+        contact(primaryPhone: $primaryPhone, phoneNumber: $phoneNumber) {
+          name
+          mappedNumber
+          lastUpdatedAt
+          blocked
+        }
       }
-    }`;
+    `;
     try {
-        const response = yield axios_1.default.post("https://api.respondflow.com/graphql", {
+        const result = yield apolloClient_1.default.query({
             query: queryText,
-            variables: {
-                "primaryPhone": primaryPhone,
-                "phoneNumber": phoneNumber,
-            },
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NTIyMDQxMDUsImlhdCI6MTcwOTAwNDEwNSwicGVyIjoiO3JlYWQ6bWVzc2FnZXM7d3JpdGU6bWVzc2FnZXM7cmVhZDp3YXZlczt3cml0ZTp3YXZlcztyZWFkOmNvbnRhY3RzO3dyaXRlOmNvbnRhY3RzIiwib3JnIjo4MDIwfQ.GWTh10uDbJWVyN_SMTXIRzWGqwnT4nPZ20G1nDnUF2k",
-            },
+            variables: { primaryPhone, phoneNumber },
         });
-        res.json(response.data);
+        res.json(result.data);
     }
     catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({ error });
+        console.error("Error getting user:", error);
+        res.status(500).json({ error: "Failed to get user" });
     }
 }));
 router.put("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
-    const queryText = `mutation createOrUpdateContact(
-    $name: String!,
-    $phoneNumber: String!,
-    $accountPhone: String!,
-    $customFields: [ContactCustomFieldInput]!,
-    $blocked: Boolean!
-  ) {
-    createOrUpdateContact(
-      name: $name,
-      phoneNumber: $phoneNumber,
-      accountPhone: $accountPhone,
-      customFields: $customFields,
-      blocked: $blocked
+    const queryText = (0, client_1.gql) `
+    mutation createOrUpdateContact(
+      $name: String!
+      $phoneNumber: String!
+      $accountPhone: String!
+      $customFields: [ContactCustomFieldInput]!
+      $blocked: Boolean!
     ) {
-      id
-      phoneNumber
-      name
-      mappedNumber
-      createdAt
-      lastUpdatedAt
-      blocked
+      createOrUpdateContact(
+        name: $name
+        phoneNumber: $phoneNumber
+        accountPhone: $accountPhone
+        customFields: $customFields
+        blocked: $blocked
+      ) {
+        id
+        phoneNumber
+        name
+        mappedNumber
+        createdAt
+        lastUpdatedAt
+        blocked
+      }
     }
-  }`;
+  `;
     try {
-        const response = yield axios_1.default.post("https://api.respondflow.com/graphql", {
-            query: queryText,
-            variables: {
-                "name": name,
-                "phoneNumber": phoneNumber,
-                "accountPhone": accountPhone,
-                "customFields": customFields,
-                "blocked": blocked
-            },
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NTIyMDQxMDUsImlhdCI6MTcwOTAwNDEwNSwicGVyIjoiO3JlYWQ6bWVzc2FnZXM7d3JpdGU6bWVzc2FnZXM7cmVhZDp3YXZlczt3cml0ZTp3YXZlcztyZWFkOmNvbnRhY3RzO3dyaXRlOmNvbnRhY3RzIiwib3JnIjo4MDIwfQ.GWTh10uDbJWVyN_SMTXIRzWGqwnT4nPZ20G1nDnUF2k",
-            },
+        const result = yield apolloClient_1.default.mutate({
+            mutation: queryText,
+            variables: { name, phoneNumber, accountPhone, customFields, blocked },
         });
-        res.json(response.data);
+        res.json(result.data);
     }
     catch (error) {
-        console.error("Error:", error);
-        if (error.response && error.response.data && error.response.data.errors) {
-            // Extract error messages
-            const errorMessages = error.response.data.errors.map((err) => err.message);
-            console.error("GraphQL Errors:", errorMessages);
-            // Send error response
-            res.status(500).json({ errors: errorMessages });
-        }
-        else {
-            // Send general error response
-            res.status(500).json({ error: error.message });
-        }
+        console.error("Error creating user:", error);
+        res.status(500).json({ error: "Failed to create user" });
     }
 }));
 router.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
