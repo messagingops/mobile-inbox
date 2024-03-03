@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const contacts_1 = __importDefault(require("./routes/contacts"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const app = (0, express_1.default)();
+const port = 3000;
+// Adding routes
+app.use(body_parser_1.default.json());
+app.use('/contacts', contacts_1.default);
+/*
+app.use('/login', loginRoute);
+app.use('/messages', messagesRoute);
+app.use('/waves', wavesRoute);
+app.use('/lists', listsRoute);
+app.use('/inbox', inboxRoute);
+app.use('/', homeRoute);
+*/
+app.listen(port, () => {
+    console.log(`Example app listening on port ${port}`);
+});
