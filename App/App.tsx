@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
+<<<<<<< HEAD
 import { Alert } from 'react-native';
 
 import { ApolloProvider } from '@apollo/client';
@@ -18,6 +19,13 @@ type Conf = typeof tamaguiConfig
 declare module '@tamagui/core' {
   interface TamaguiCustomConfig extends Conf {}
 }
+=======
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ApolloProvider } from '@apollo/client';
+import { client } from './client.tsx';
+import AuthScreen from './components/AuthScreen.tsx'; // Import AuthScreen component
+>>>>>>> main
 
 export default function App() {
   const [toNumber, setToNumber] = useState('');
@@ -54,6 +62,7 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
+<<<<<<< HEAD
       <TamaguiProvider config={tamaguiConfig}>
       <Theme name="dark">
         {/* Using YStack for vertical layout */}
@@ -79,6 +88,10 @@ export default function App() {
           <Button onPress={handleSubmit}>Submit</Button>
         </YStack>
         </Theme>
+=======
+      <View style={styles.container}>
+        <AuthScreen /> 
+>>>>>>> main
         <StatusBar style="auto" />
       </Theme>
       </TamaguiProvider>
@@ -87,3 +100,14 @@ export default function App() {
   );
 }
 
+<<<<<<< HEAD
+=======
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
+>>>>>>> main
