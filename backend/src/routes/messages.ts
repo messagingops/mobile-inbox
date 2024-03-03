@@ -5,6 +5,7 @@ import { gql } from '@apollo/client/core';
 const router: Router = Router();
 
 router.use(express.urlencoded({ extended: false }));
+router.use(express.json())
 
 const MESSAGE_MUTATION = gql`
   mutation createMessage($to: String!, $from: String!, $body: String!, $media: [String!], $passthrough: String) {
@@ -25,13 +26,9 @@ const MESSAGE_MUTATION = gql`
 `;
 
 router.post('/', async (req, res) => {
-    console.log("HEREHERE")
-    console.log(req.body);
-    const to = process.env.to_number;
-    const from = process.env.from_number;
-    const body = "Hello, this is a test message from express.";
-    const media: string[] = []; // Assuming media is optional, otherwise provide test data
-    const passthrough = 'test_passthrough_data';
+    const { to, from, body } = req.body;
+    const media : string[] = []
+    const passthrough = ""
   
     try {
       // Make the mutation request using Apollo Client
@@ -39,13 +36,21 @@ router.post('/', async (req, res) => {
         mutation: MESSAGE_MUTATION,
         variables: { to, from, body, media, passthrough },
       });
+
+      if (response.data && response.errors) {
+        console.log("Operation partially succeeded:", response.data);
+        console.log("But encountered errors:", response.errors);
+      } else {
+        res.json(response.data);
+      }
   
       // Send the response back to the client
-      res.json(response.data);
+      
     } catch (error) {
-      // Handle errors
-      res.status(500).json({ error: "Failed" });
+      
     }
+
+    
   });
 
 router.get('/', (req: Request, res: Response) => {
