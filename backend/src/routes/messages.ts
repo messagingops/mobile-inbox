@@ -11,8 +11,6 @@ const MESSAGE_MUTATION = gql`
     createMessage(to: $to, from: $from, body: $body, media: $media, passthrough: $passthrough) {
       id
       legacyId
-      account
-      organization
       toNumber
       fromNumber
       status
@@ -21,15 +19,19 @@ const MESSAGE_MUTATION = gql`
       body
       sentAt
       confirmedAt
-      wave
-      contact
       errorCode
     }
   }
 `;
 
 router.post('/', async (req, res) => {
-    const { to, from, body, media, passthrough } = req.body;
+    console.log("HEREHERE")
+    console.log(req.body);
+    const to = process.env.to_number;
+    const from = process.env.from_number;
+    const body = "Hello, this is a test message from express.";
+    const media: string[] = []; // Assuming media is optional, otherwise provide test data
+    const passthrough = 'test_passthrough_data';
   
     try {
       // Make the mutation request using Apollo Client
