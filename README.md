@@ -17,7 +17,7 @@ To run this project on your local machine, follow these steps:
    ```bash
    git clone https://github.com/messagingops/mobile-inbox.git
 
-2. Run the following command in the App and backend sub-directories
+2. Run the following command in the App and backend sub-directories. Do not run this command in the root directory for the repository
 
    ```bash
    npm install
@@ -27,6 +27,6 @@ To run this project on your local machine, follow these steps:
    ```bash
    npx expo start
 
-4. You may have to switch from the development build to the Expo Go build. Do so by pressing s
+4. You may have to switch from the development build to the Expo Go build. Do so by pressing **s**
 
-5. Scan the generated QR code using your mobile device or run a simulator 
+5. Make sure you have the Expo Go app downloaded. Scan the QR code displayed in your terminal with your device camera. Alternatively, run a simulator on your device
