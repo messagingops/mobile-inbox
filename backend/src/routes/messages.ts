@@ -25,6 +25,10 @@ const MESSAGE_MUTATION = gql`
   }
 `;
 
+/*
+ERROR: Issue with failure to retrieve error code in graphQLErrors
+WILL FIX :D
+*/
 router.post('/', async (req, res) => {
     const { to, from, body } = req.body;
     const media : string[] = []
