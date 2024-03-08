@@ -1,10 +1,9 @@
-import express, { Router, Request, Response } from "express";
-import apolloClient from '../apolloClient';
-import { gql } from '@apollo/client/core';
+import express, { Router, Request, Response } from "express"
+import apolloClient from '../apolloClient'
+import { gql } from '@apollo/client/core'
 
-const router: Router = Router();
+const router: Router = Router()
 
-router.use(express.urlencoded({ extended: false }));
 router.use(express.json())
 
 // GraphQL list mutation syntax
@@ -28,7 +27,7 @@ const LIST_MUTATION = gql`mutation createOrUpdateList(
 }
 `
 
-// Graphql list query syntax
+// GraphQL list query syntax
 const LIST_QUERY = gql`
 query list(
   $primaryPhone: String!,
@@ -49,8 +48,31 @@ query list(
   }
 }`
 
+// GraphQL add addContactsToList query syntax
+const ADD_CONTACTS_TO_LIST_MUTATION = gql`
+mutation addContactsToList(
+  $primaryPhone: String!,
+  $listName: String!,
+  $phoneNumbers: [String!]!
+) {
+  addContactsToList(
+    primaryPhone: $primaryPhone,
+    listName: $listName,
+    phoneNumbers: $phoneNumbers
+  ) {
+    id
+    createdBy
+    name
+    createdAt
+    lastUpdatedAt
+    size
+    querySourceListName
+    queryNameSearchTerm
+  }
+}`
+
 /*
-  Get list
+ Get list
 */
 router.get('/', async (req, res) => {
   const { primaryPhone, listName } = req.body;
@@ -76,9 +98,9 @@ router.get('/', async (req, res) => {
 });
 
 /*
-   Edit/create list
+ Edit/create list
 */
-router.post('/', async (req, res) => {
+router.post('/mutate', async (req, res) => {
     const { primaryPhone, listQuery } = req.body;
 
    try {
@@ -86,6 +108,32 @@ router.post('/', async (req, res) => {
      const response = await apolloClient.mutate({
        mutation: LIST_MUTATION,
        variables: { primaryPhone, listQuery },
+     });
+
+     if (response.data && response.errors) {
+       console.log("Operation partially succeeded:", response.data);
+       console.log("But encountered errors:", response.errors);
+     } else {
+      // Send the response back to the client
+       res.json(response.data);
+     }
+     
+   } catch (error) {
+      console.log(error)
+   }   
+ });
+
+ /*
+  Add contacts to list
+ */
+  router.post('/addContacts', async (req, res) => {
+    const { primaryPhone, listName, phoneNumbers } = req.body;
+
+   try {
+     // Make the mutation request using Apollo Client
+     const response = await apolloClient.mutate({
+       mutation: ADD_CONTACTS_TO_LIST_MUTATION,
+       variables: { primaryPhone, listName, phoneNumbers },
      });
 
      if (response.data && response.errors) {
