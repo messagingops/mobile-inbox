@@ -72,7 +72,7 @@ mutation addContactsToList(
 }`
 
 /*
- Get list
+ Get list with GET request
 */
 router.get('/', async (req, res) => {
   const { primaryPhone, listName } = req.body;
@@ -98,9 +98,9 @@ router.get('/', async (req, res) => {
 });
 
 /*
- Edit/create list
+ Edit/create list with POST request
 */
-router.post('/mutate', async (req, res) => {
+router.post('/', async (req, res) => {
     const { primaryPhone, listQuery } = req.body;
 
    try {
@@ -124,9 +124,9 @@ router.post('/mutate', async (req, res) => {
  });
 
  /*
-  Add contacts to list
+  Add contacts to list with PUT request
  */
-  router.post('/addContacts', async (req, res) => {
+  router.put('/', async (req, res) => {
     const { primaryPhone, listName, phoneNumbers } = req.body;
 
    try {
