@@ -2,9 +2,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Import your components for Contacts, Conversations, and Waves
-import ContactsList from './ContactsList';
-import ConversationList from './Conversations/ConversationList';
-import WaveList from './Waves/WaveList';
+import ContactsList from '../Contacts/ContactsList';
+import ConversationList from '../Conversations/ConversationList';
+import WaveList from '../Waves/WaveList';
 
 // Create a bottom tab navigator
 const Tab = createBottomTabNavigator();
