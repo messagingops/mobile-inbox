@@ -11,7 +11,7 @@ const app: Express = express()
 const port = 3000
 
 // Adding routes
-app.use('/contacts', contactRoute);
+app.use('/contacts', contactRoute)
 app.use('/login', loginRoute);
 app.use('/messages', messagesRoute);
 app.use('/waves', wavesRoute);
