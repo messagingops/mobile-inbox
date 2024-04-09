@@ -15,6 +15,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.volt.inbox",
       "supportsTablet": true
     },
     "android": {

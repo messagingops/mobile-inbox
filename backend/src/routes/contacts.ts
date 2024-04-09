@@ -1,20 +1,120 @@
 import express, { Router, Request, Response } from "express";
-const router: Router = Router()
+import client from "../apolloClient";
+import { gql } from "@apollo/client";
 
-router.post('/', (req: Request, res: Response) => {
-  res.send('POST Request sent to contacts')
-})
+const router: Router = Router();
 
-router.get('/', (req: Request, res: Response) => {
-  res.send('GET Request sent to contacts')
-})
+router.post("/", async (req: Request, res: Response) => {
+  const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
 
-router.put('/', (req: Request, res: Response) => {
-  res.send('PUT Request sent to contacts')
-})
+  const queryText = gql`
+    mutation createOrUpdateContact(
+      $name: String!
+      $phoneNumber: String!
+      $accountPhone: String!
+      $customFields: [ContactCustomFieldInput]!
+      $blocked: Boolean!
+    ) {
+      createOrUpdateContact(
+        name: $name
+        phoneNumber: $phoneNumber
+        accountPhone: $accountPhone
+        customFields: $customFields
+        blocked: $blocked
+      ) {
+        id
+        phoneNumber
+        name
+        mappedNumber
+        createdAt
+        lastUpdatedAt
+        blocked
+      }
+    }
+  `;
 
-router.delete('/', (req: Request, res: Response) => {
-  res.send('DELETE Request sent to contacts')
-})
+  try {
+    const result = await client.mutate({
+      mutation: queryText,
+      variables: { name, phoneNumber, accountPhone, customFields, blocked },
+    });
+    res.json(result.data);
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Failed to create user" });
+  }
+});
+
+router.get("/:primaryPhone/:phoneNumber", async (req: Request, res: Response) => {
+    const { primaryPhone, phoneNumber } = req.params;
+
+    const queryText = gql`
+      query contact($primaryPhone: String!, $phoneNumber: String!) {
+        contact(primaryPhone: $primaryPhone, phoneNumber: $phoneNumber) {
+          name
+          mappedNumber
+          lastUpdatedAt
+          blocked
+        }
+      }
+    `;
+
+    try {
+      const result = await client.query({
+        query: queryText,
+        variables: { primaryPhone, phoneNumber },
+      });
+      res.json(result.data);
+    } catch (error) {
+      console.error("Error getting user:", error);
+      res.status(500).json({ error: "Failed to get user" });
+    }
+  }
+);
+
+router.put("/", async (req: Request, res: Response) => {
+  const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
+
+  const queryText = gql`
+    mutation createOrUpdateContact(
+      $name: String!
+      $phoneNumber: String!
+      $accountPhone: String!
+      $customFields: [ContactCustomFieldInput]!
+      $blocked: Boolean!
+    ) {
+      createOrUpdateContact(
+        name: $name
+        phoneNumber: $phoneNumber
+        accountPhone: $accountPhone
+        customFields: $customFields
+        blocked: $blocked
+      ) {
+        id
+        phoneNumber
+        name
+        mappedNumber
+        createdAt
+        lastUpdatedAt
+        blocked
+      }
+    }
+  `;
+
+  try {
+    const result = await client.mutate({
+      mutation: queryText,
+      variables: { name, phoneNumber, accountPhone, customFields, blocked },
+    });
+    res.json(result.data);
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Failed to create user" });
+  }
+});
+
+router.delete("/", async (req: Request, res: Response) => {
+  res.send("DELETE Request sent to contacts");
+});
 
 export default router;
