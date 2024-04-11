@@ -1,15 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-// Define the props type for the component
 type ContactItemProps = {
   contactName: string;
   message: string;
-  date: string; // assuming the date is a string in the format MM/DD/YY
-  time: string; // assuming the time is a string in the format XX:XXa
+  date: string; 
+  time: string; 
 };
 
-// The ContactItem component
 const ContactItem: React.FC<ContactItemProps> = ({ contactName, message, date, time }) => {
   return (
     <View style={styles.container}>
@@ -25,7 +23,6 @@ const ContactItem: React.FC<ContactItemProps> = ({ contactName, message, date, t
   );
 };
 
-// Define styles for the component
 const styles = StyleSheet.create({
   container: {
 

@@ -1,9 +1,9 @@
 import * as React from 'react';
-import ConversationsScreen from './screens/ConversationsScreen';
+import MessageScreen from './screens/MessageScreen';
 
 function App() {
   return(
-    <ConversationsScreen />
+    <MessageScreen />
   );
 }
 
