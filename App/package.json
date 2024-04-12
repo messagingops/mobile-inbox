@@ -12,8 +12,13 @@
     "@apollo/client": "^3.9.5",
     "@react-native-async-storage/async-storage": "^1.22.2",
     "@react-native-firebase/app": "^18.8.0",
-    "@tamagui/config": "^1.90.16",
-    "@tamagui/core": "^1.90.16",
+    "@react-navigation/bottom-tabs": "^6.5.20",
+    "@react-navigation/native": "^6.1.17",
+    "@tamagui/babel-plugin": "^1.94.4",
+    "@tamagui/colors": "^1.94.4",
+    "@tamagui/config": "^1.94.4",
+    "@tamagui/core": "^1.94.4",
+    "@tamagui/metro-plugin": "^1.94.4",
     "@tamagui/static": "^1.90.16",
     "dotenv": "^16.4.5",
     "expo": "~50.0.6",
@@ -25,7 +30,7 @@
     "lucide-react-native": "^0.367.0",
     "react": "18.2.0",
     "react-native": "0.73.4",
-    "tamagui": "^1.90.16"
+    "tamagui": "^1.94.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import MessageScreen from './screens/MessageScreen';
+import MessageScreen from './components/MessageScreen';
 
 function App() {
   return(
