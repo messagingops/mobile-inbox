@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 
 import { ApolloProvider } from '@apollo/client';
 import { client } from './client';
+import AuthScreen from './components/AuthScreen'; // Import AuthScreen component
 import { XStack, YStack } from 'tamagui'
 import { Button, Theme } from 'tamagui'
 import { TamaguiProvider, Input } from 'tamagui'
