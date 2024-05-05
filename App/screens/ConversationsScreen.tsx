@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Icon from '../components/Icons'
-import ContactTab from '../components/Conversations/ContactTab'
+import ContactTab from '../components/Conversations/ConversationTab'
 
 interface ContactItem {
     name: string;
@@ -100,7 +100,7 @@ const ConversationsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 32, // Padding for everything left and right
+        paddingHorizontal: 32, 
         backgroundColor: '#FFF',
     },
     edit: {
