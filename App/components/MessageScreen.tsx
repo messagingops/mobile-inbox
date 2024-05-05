@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
     },
     top: {
-        marginTop: 64,
+        marginTop: 80,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between', // This will position the icon and placeholder at the extremes

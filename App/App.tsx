@@ -4,7 +4,7 @@ import ConversationsScreen from './screens/ConversationsScreen';
 
 function App() {
   return(
-    <ConversationsScreen />
+    <MessageScreen />
   );
 }
 

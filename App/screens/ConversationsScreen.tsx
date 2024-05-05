@@ -15,49 +15,49 @@ const data: ContactItem[] = [
         name: "Jerry Wu",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Daniel Kim",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Danielle Koay",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Avery Li",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Jerry Wu",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Daniel Kim",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Danielle Koay",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
     {
         name: "Avery Li",
         message: "Hello, this is a test", 
         date: '04/11/24',
-        time: '- 12:23pm',
+        time: '12:23pm',
     },
 ]
 
@@ -69,6 +69,8 @@ const ConversationsScreen = () => {
 
     const renderItem = ({ item }: { item: ContactItem }) => (
         <TouchableOpacity onPress={() => handlePress(item)}>
+            <View style={styles.divider} />
+        
           <ContactTab
             contactName={item.name}
             message={item.message}
@@ -82,10 +84,10 @@ const ConversationsScreen = () => {
     
     <View style={styles.container}>
         <View style={styles.top}>
-            <Text style={styles.edit}>Edit</Text>
+            <Text style={styles.title}>Conversations</Text>
             <Icon name="CirclePlus" color="#707070" size={24}/>        
         </View>
-        <Text style={styles.title}>Conversations</Text>
+        
         <FlatList
             data={data}
             renderItem={renderItem}
@@ -100,24 +102,27 @@ const ConversationsScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 32, 
         backgroundColor: '#FFF',
     },
-    edit: {
-        color: '#2E2E2E',
-        fontSize: 14,
-    },
+    
     top: {
-        marginTop: 64, 
+        marginTop: 80, 
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 32,
+        marginLeft: 32,
+        marginRight: 32,
     },
     title: {
         fontSize: 32,
         fontWeight: "bold",
-        marginBottom: 32,
+      
     },
+    divider: {
+        height: 1,
+        backgroundColor: '#EDEDED', // Choose a color that fits your theme
+      },
    
 })
 

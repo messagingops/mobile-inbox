@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import Icon from '../Icons'
 
 type ContactItemProps = {
   contactName: string;
@@ -10,25 +11,47 @@ type ContactItemProps = {
 
 const ContactItem: React.FC<ContactItemProps> = ({ contactName, message, date, time }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.leftColumn}>
-        <Text style={styles.contactName}>{contactName}</Text>
-        <Text style={styles.message}>{message}</Text>
+    <View>
+      
+      <View style={styles.container}>
+        <View style={styles.leftColumn}>
+          <Text style={styles.contactName}>{contactName}</Text>
+          <Text style={styles.message}>{message}</Text>
+        </View>
+        <View style={styles.rightWithIcon}>
+          <View style={styles.rightColumn}>
+            <Text style={styles.date}>{date}</Text>
+            <Text style={styles.time}>{time}</Text>
+          </View>
+          <View style={styles.icon}>
+            <Icon name="ChevronRight" color="#A0A0A0" size={24}/>
+          </View>
+        </View>
       </View>
-      <View style={styles.rightColumn}>
-        <Text style={styles.date}>{date}</Text>
-        <Text style={styles.time}>{time}</Text>
-      </View>
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  
+  
   container: {
-
+    marginLeft: 32,
+    marginRight: 32,
+    marginTop: 24,
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  rightWithIcon: {
+    flexDirection: 'row',
+    marginTop: -16,
+    alignItems: 'center', 
+  },
+  icon: {
+    marginLeft: 4, 
   },
   leftColumn: {
     flexDirection: 'column',
@@ -40,26 +63,26 @@ const styles = StyleSheet.create({
   },
   contactName: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
+    color: '#707070',
     
   },
   message: {
-    marginTop: 16,
-    color: '#2E2E2E',
+    marginTop: 8,
+    color: '#A0A0A0',
     fontSize: 16,
     marginBottom: 16,
     
   },
   date: {
-    marginTop: 4,
-    fontSize: 16,
+    fontSize: 14,
     fontStyle: 'italic',
-    color: '#2E2E2E',
+    color: '#7E7E7E',
   },
   time: {
-    fontSize: 16,
+    fontSize: 14,
     fontStyle: 'italic',
-    color: '#2E2E2E',
+    color: '#7E7E7E',
   },
 });
 
