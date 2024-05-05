@@ -59,8 +59,6 @@ export default function App() {
     <ApolloProvider client={client}>
       <TamaguiProvider config={tamaguiConfig}>
       <Theme name="dark">
-        <LoginScreen />
-        {/* 
         <Theme name="yellow">
         <YStack space="$4" alignItems="center" paddingTop="$10">
           
@@ -83,7 +81,7 @@ export default function App() {
           <Button onPress={handleSubmit}>Submit</Button>
         </YStack>
         </Theme>
-        <StatusBar style="auto" />*/}
+        <StatusBar style="auto" />
       </Theme>
       </TamaguiProvider>
 
