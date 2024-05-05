@@ -1,5 +1,34 @@
 {
   "expo": {
+    "plugins" : [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            {
+              "poppins-black": "./assets/fonts/Poppins/Poppins-Black.ttf",
+              "poppins-black-italic": "./assets/fonts/Poppins/Poppins-BlackItalic.ttf",
+              "poppins-bold": "./assets/fonts/Poppins-Bold.ttf",
+              "poppins-bold-italic": "./assets/fonts/Poppins-BoldItalic.ttf",
+              "poppins-extra-bold": "./assets/fonts/Poppins/Poppins-ExtraBold.ttf",
+              "poppins-extra-bold-italic": "./assets/fonts/Poppins/Poppins-ExtraBoldItalic.ttf",
+              "poppins-extra-light": "./assets/fonts/Poppins/Poppins-ExtraLight.ttf",
+              "poppins-extra-light-italic": "./assets/fonts/Poppins/Poppins-ExtraLightItalic.ttf",
+              "poppins-italic": "./assets/fonts/Poppins/Poppins-Italic.ttf",
+              "poppins-light": "./assets/fonts/Poppins/Poppins-Light.ttf",
+              "poppins-light-italic": "./assets/fonts/Poppins/Poppins-LightItalic.ttf",
+              "poppins-medium": "./assets/fonts/Poppins/Poppins-Medium.ttf",
+              "poppins-medium-italic": "./assets/fonts/Poppins/Poppins-MediumItalic.ttf",
+              "poppins-regular": "./assets/fonts/Poppins/Poppins-Regular.ttf",
+              "poppins-semi-bold": "./assets/fonts/Poppins/Poppins-SemiBold.ttf",
+              "poppins-semi-bold-italic": "./assets/fonts/Poppins/Poppins-SemiBoldItalic.ttf",
+              "poppins-thin": "./assets/fonts/Poppins/Poppins-Thin.ttf",
+              "poppins-thin-italic": "./assets/fonts/Poppins/Poppins-ThinItalic.ttf"
+            }
+          ]
+        }
+      ]
+    ],
     "name": "App",
     "slug": "App",
     "version": "1.0.0",

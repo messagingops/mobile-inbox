@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
+//import { Plus } from '@tamagui/lucide-icons'
+import { StatusBar} from 'expo-status-bar';
 import { XStack, YStack, Text, Image, Input, Button, Theme, createFont } from 'tamagui';
+import { useFonts } from 'expo-font';
+import SegmentedInput from './SegmentedInput';
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    // Your font imports...
+  });
   const [mobileNumber, setMobileNumber] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [step, setStep] = useState(1); // Track the step of the authentication process
@@ -27,6 +33,14 @@ export default function App() {
       <StatusBar style="auto" />
       {step === 1 && (
         <YStack flex={1} justifyContent="center" alignItems="center">
+          {/* Your back button */}
+          <Button
+            //icon="arrow-back"
+            onPress={() => {}}
+            position="absolute"
+            left={10}
+            top={10}
+          />
           <Image
             source={require('../assets/mobile_icon.png')}
             width={156}
@@ -56,26 +70,41 @@ export default function App() {
       )}
       {step === 2 && (
         <YStack flex={1} justifyContent="center" alignItems="center">
+          {/* Your back button */}
+          <Button
+            //icon="arrow-back"
+            onPress={() => setStep(1)}
+            position="absolute"
+            left={10}
+            top={10}
+          />
           <Text
             color={'#505050'}
-            fontFamily='$body' // Use the custom Poppins font
-            fontSize={24}
-            lineHeight={36}
-            fontWeight='700'
+            style={{ 
+              fontFamily: 'poppins-bold',
+              fontWeight: '700',
+              fontSize: 24,
+            }}
             textAlign="center"
-            marginBottom="10%" // Adjusted to move the text up
+            marginBottom="2%" // Adjusted to move the text up
+            marginTop="-35%"
           >
             Verify Your Account
           </Text>
-          <Input
-            placeholder="Enter Verification Code"
-            value={verificationCode}
-            onChangeText={setVerificationCode}
-            keyboardType="numeric"
-            maxLength={6} // Assuming verification code is 6 digits
-            width="82%"
-            marginBottom="10%" // Adjusted to move the input field up
-          />
+          <Text
+            color={'#707070'}
+            style={{ 
+              fontFamily: 'poppins-extralight',
+              fontWeight: '400',
+              fontSize: 14,
+            }}
+            textAlign="center"
+            width="50%"
+            marginBottom="10%" // Adjusted to move the text up
+          >
+            Please enter the 6-digit code we sent to your phone number
+          </Text>
+          <SegmentedInput length={6} onChange={setVerificationCode} />
           <Button
             onPress={handleVerifyCode}
             backgroundColor="#EFE811"

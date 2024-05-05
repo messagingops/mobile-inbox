@@ -11,6 +11,8 @@ import { TamaguiProvider, Input } from 'tamagui'
 import { View ,createTamagui} from '@tamagui/core';
 import { config } from '@tamagui/config/v3'
 
+import LoginScreen from './screens/LoginScreen'; // Import LoginScreen component
+
 // you usually export this from a tamagui.config.ts file
 const tamaguiConfig = createTamagui(config)
 
@@ -57,7 +59,8 @@ export default function App() {
     <ApolloProvider client={client}>
       <TamaguiProvider config={tamaguiConfig}>
       <Theme name="dark">
-        {/* Using YStack for vertical layout */}
+        <LoginScreen />
+        {/* 
         <Theme name="yellow">
         <YStack space="$4" alignItems="center" paddingTop="$10">
           
@@ -80,7 +83,7 @@ export default function App() {
           <Button onPress={handleSubmit}>Submit</Button>
         </YStack>
         </Theme>
-        <StatusBar style="auto" />
+        <StatusBar style="auto" />*/}
       </Theme>
       </TamaguiProvider>
 
