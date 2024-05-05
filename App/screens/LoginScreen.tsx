@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { YStack, Text, Image, Input, Button, Theme, ButtonIcon } from 'tamagui';
 import { useFonts } from 'expo-font';
-//import { Plus, ChevronLeft } from '@tamagui/lucide-icons';
 import SegmentedInput from './SegmentedInput';
 
 export default function App() {
@@ -79,13 +78,6 @@ export default function App() {
       )}
       {step === 2 && (
         <YStack flex={1} justifyContent="center" alignItems="center">
-          {/* Your back button */}
-          <Button
-            onPress={() => setStep(1)}
-            position="absolute"
-            left={10}
-            top={10}
-          />
           <Text
             color={'#505050'}
             style={{ 
