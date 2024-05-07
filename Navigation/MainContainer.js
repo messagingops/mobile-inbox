@@ -2,7 +2,12 @@ import * as React from 'react';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Image } from 'react-native';
+
+// Screens
+import conversationsIcon from './conversations.png';
+import contactsIcon from './contacts.png';
+import pushesIcon from './pushes.png';
 
 // Screens
 import ConversationScreen from './screens/ConversationsScreen';
@@ -21,33 +26,33 @@ export default function MainContainer() {
         <NavigationContainer>
             <Tab.Navigator initialRouteName={conversationsName}
             screenOptions={({route}) => ({
-                tabBarIcon: ({focused, color, size}) => {
+                tabBarIcon: ({color, size}) => {
                     let iconName;
                     let rn = route.name;
 
                     if (rn === conversationsName) {
-                        iconName = focused ? 'chatbubbles' : 'chatbubbles-outline'
+                        iconName = conversationsIcon;
                     } else  if (rn === contactsName) {
-                        iconName = focused ? 'list' : 'list-outline'
+                        iconName = contactsIcon;
                     } else if (rn === wavesName) {
-                        iconName = focused ? 'settings' : 'settings-outline';
+                        iconName = pushesIcon;
                     }
 
-                    return <Ionicons name={iconName} size={size} color={color}/>
+                    return <Image source={iconName} style={{ width: 30, height: 30, tintColor: color, marginBottom: 10, marginRight: 20 }}/>;
                 },
             })}
             tabBarOptions={{
                 activeTintColor: 'blue',
                 inactiveTintColor: 'grey',
                 labelStyle: { paddingBottom: 10, fontSize: 10 },
-                style: { padding: 10, height: 70 }
+                style: { padding: 10, height: 100, paddingBottom: 50 }
             }}
             >
-                <Tab.Screen name={conversationsName} component={ConversationScreen}/>
-                <Tab.Screen name={contactsName} component={ContactsScreen}/>
-                <Tab.Screen name={wavesName} component={WavesScreen}/>
+                <Tab.Screen name={conversationsName} component={ConversationScreen} options={{title: ''}}/>
+                <Tab.Screen name={contactsName} component={ContactsScreen} options={{title: ''}}/>
+                <Tab.Screen name={wavesName} component={WavesScreen} options={{title: ''}} />
 
             </Tab.Navigator>
         </NavigationContainer>
-    )
+    );
 }
