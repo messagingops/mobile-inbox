@@ -45,7 +45,8 @@ export default function MainContainer() {
                 activeTintColor: 'blue',
                 inactiveTintColor: 'grey',
                 labelStyle: { paddingBottom: 10, fontSize: 10 },
-                style: { padding: 10, height: 100, paddingBottom: 50 }
+                style: { padding: 10, height: 100, paddingBottom: 50 },
+                elevation: 0,
             }}
             >
                 <Tab.Screen name={conversationsName} component={ConversationScreen} options={{title: ''}}/>
