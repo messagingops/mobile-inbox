@@ -10,6 +10,9 @@ xcuserdata/
 *.xccheckout
 
 app/node_modules/
+backend/node_modules/
+
+backend/src/apolloClient.ts
 
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 build/
