@@ -5,6 +5,7 @@ import { gql } from '@apollo/client/core';
 const router: Router = Router()
 
 router.use(express.urlencoded({ extended: false }));
+router.use(express.json())
 
 router.get('/', (req: Request, res: Response) => {
     // Example Apollo Client Query

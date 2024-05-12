@@ -21,7 +21,7 @@ export const link = new HttpLink({
   fetch,
   headers: {
     "Content-Type": 'application/json',
-    "Authorization": `Bearer ${process.env.VOLT_API_KEY}`}
+    "Authorization": `Bearer ${'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3NTIyMDQxMDUsImlhdCI6MTcwOTAwNDEwNSwicGVyIjoiO3JlYWQ6bWVzc2FnZXM7d3JpdGU6bWVzc2FnZXM7cmVhZDp3YXZlczt3cml0ZTp3YXZlcztyZWFkOmNvbnRhY3RzO3dyaXRlOmNvbnRhY3RzIiwib3JnIjo4MDIwfQ.GWTh10uDbJWVyN_SMTXIRzWGqwnT4nPZ20G1nDnUF2k'}`}
  })  
 
  export const apolloClient = new ApolloClient({

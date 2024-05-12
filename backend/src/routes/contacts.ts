@@ -2,7 +2,8 @@ import express, { Router, Request, Response } from "express";
 import client from "../apolloClient";
 import { gql } from "@apollo/client";
 
-const router: Router = Router();
+const router: Router = Router(); 
+router.use(express.json)
 
 router.post("/", async (req: Request, res: Response) => {
   const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
@@ -45,6 +46,48 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
+
+// ARYAN's version
+router.get('/', async (req, res) => {
+  const { primaryPhone, phoneNumber } = req.body;
+
+  const queryText = gql`
+      query contact($primaryPhone: String!, $phoneNumber: String!) {
+        contact(primaryPhone: $primaryPhone, phoneNumber: $phoneNumber) {
+          name
+          id
+          mappedNumber
+          lists {
+            name,
+            size,
+            createdBy,
+            createdAt  
+          }
+          lastUpdatedAt
+          blocked
+        }
+      }
+    `;
+
+  try {
+    const response = await client.mutate({
+      mutation: queryText,
+      variables: { primaryPhone, phoneNumber},
+      errorPolicy: 'all'
+    });
+
+    if (response.data && response.errors) {
+      console.log("Operation partially succeeded:", response.data);
+      console.log("But encountered errors:", response.errors);
+    } else {
+      res.json(response.data)
+    }
+  } catch(error) {
+    console.log(error)
+  }
+});
+
+/* AARAV ORIGINAL
 router.get("/:primaryPhone/:phoneNumber", async (req: Request, res: Response) => {
     const { primaryPhone, phoneNumber } = req.params;
 
@@ -71,6 +114,7 @@ router.get("/:primaryPhone/:phoneNumber", async (req: Request, res: Response) =>
     }
   }
 );
+*/
 
 router.put("/", async (req: Request, res: Response) => {
   const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;

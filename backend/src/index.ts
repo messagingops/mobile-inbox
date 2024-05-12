@@ -6,9 +6,13 @@ import wavesRoute from './routes/waves';
 import listsRoute from './routes/lists';
 import inboxRoute from './routes/inbox';
 import homeRoute from './routes/home';
+import 'dotenv/config';
 
 const app: Express = express()
 const port = 3000
+
+//Loading.env file
+require('dotenv').config();
 
 // Adding routes
 app.use('/contacts', contactRoute)
@@ -23,3 +27,4 @@ app.use('/', homeRoute);
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
