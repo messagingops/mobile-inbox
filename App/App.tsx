@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import MainContainer from './components/Navigation/MainContainer'
 import { StatusBar } from 'expo-status-bar';
-import { Alert } from 'react-native';
+import { Alert, View, StyleSheet } from 'react-native';
 
 import { ApolloProvider } from '@apollo/client';
 import { client } from './client';
@@ -8,11 +9,17 @@ import AuthScreen from './components/AuthScreen'; // Import AuthScreen component
 import { XStack, YStack } from 'tamagui'
 import { Button, Theme } from 'tamagui'
 import { TamaguiProvider, Input } from 'tamagui'
-import { View ,createTamagui} from '@tamagui/core';
+import { createTamagui} from '@tamagui/core';
 import { config } from '@tamagui/config/v3'
+import { LogBox } from 'react-native';
+
+// Ignore specific logs
+LogBox.ignoreLogs(['Warning: ...']); // Specify the warning you want to ignore
 
 // you usually export this from a tamagui.config.ts file
 const tamaguiConfig = createTamagui(config)
+
+
 
 // make TypeScript type everything based on your config
 type Conf = typeof tamaguiConfig
@@ -55,36 +62,18 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-      <TamaguiProvider config={tamaguiConfig}>
-      <Theme name="dark">
-        {/* Using YStack for vertical layout */}
-        <Theme name="yellow">
-        <YStack space="$4" alignItems="center" paddingTop="$10">
-          
-          <Input
-            placeholder="To Number"
-            value={toNumber}
-            onChangeText={setToNumber}
-          />
-          <Input
-            placeholder="From Number"
-            value={fromNumber}
-            onChangeText={setFromNumber}
-          />
-          <Input
-            placeholder="Message"
-            value={messageBody}
-            onChangeText={setBody}
-          />
-          
-          <Button onPress={handleSubmit}>Submit</Button>
-        </YStack>
-        </Theme>
+      <View style={styles.container}>
         <StatusBar style="auto" />
-      </Theme>
-      </TamaguiProvider>
+        <MainContainer />
+      </View>
 
     </ApolloProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
