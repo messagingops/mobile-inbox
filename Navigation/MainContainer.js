@@ -1,11 +1,10 @@
 import * as React from 'react';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, Image, Text } from 'react-native';
 import * as Font from 'expo-font';
 
-// Screens
+// Icons
 import conversationsIcon from './conversations.png';
 import contactsIcon from './contacts.png';
 import pushesIcon from './pushes.png';
@@ -35,61 +34,72 @@ export default function MainContainer() {
         loadFonts();
     }, []);
 
-    return(
+    return (
         <NavigationContainer>
-            <Tab.Navigator initialRouteName={conversationsName}
-            screenOptions={({route}) => ({
-                tabBarIcon: ({color, size}) => {
-                    let iconName;
-                    let rn = route.name;
+            <Tab.Navigator
+                initialRouteName={conversationsName}
+                screenOptions={({ route }) => ({
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
+                        let rn = route.name;
 
-                    if (rn === conversationsName) {
-                        iconName = conversationsIcon;
-                    } else  if (rn === contactsName) {
-                        iconName = contactsIcon;
-                    } else if (rn === wavesName) {
-                        iconName = pushesIcon;
-                    }
+                        if (rn === conversationsName) {
+                            iconName = conversationsIcon;
+                        } else if (rn === contactsName) {
+                            iconName = contactsIcon;
+                        } else if (rn === wavesName) {
+                            iconName = pushesIcon;
+                        }
 
-                    return <Image source={iconName} style={{ width: 30, height: 30, tintColor: color, marginBottom: 10 }}/>;
-                },
-                tabBarLabel: ({ focused, color }) => {
-                    let label;
+                        return (
+                            <Image
+                                source={iconName}
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                    tintColor: color,
+                                    marginBottom: focused ? 15 : 10, // Moves the icon up when focused
+                                }}
+                            />
+                        );
+                    },
+                    tabBarLabel: ({ focused, color }) => {
+                        let label;
 
-                    if (route.name === conversationsName) {
-                        label = 'Conversations';
-                    } else if (route.name === contactsName) {
-                        label = 'Contacts';
-                    } else if (route.name === wavesName) {
-                        label = 'Push';
-                    }
+                        if (route.name === conversationsName) {
+                            label = 'Conversations';
+                        } else if (route.name === contactsName) {
+                            label = 'Contacts';
+                        } else if (route.name === wavesName) {
+                            label = 'Push';
+                        }
 
-                    return (
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={{ color, fontSize: 12, fontFamily: 'Poppins' }}>{label}</Text>
-                            <View
+                        return (
+                            <View style={{ alignItems: 'center', transform: [{ translateY: focused ? -5 : 0 }] }}>
+                                <Text style={{ color, fontSize: 12, fontFamily: 'Poppins' }}>{label}</Text>
+                                <View
                                     style={{
-                                        width: '100%',
-                                        height: 10,
-                                        backgroundColor: focused ? 'gold' : 'transparent',
+                                        width: label.length * 8,
+                                        height: 5,
+                                        backgroundColor: focused ? 'yellow' : 'transparent',
+                                        marginTop: 5,
                                     }}
                                 />
-                        </View>
-                    );
-                },
-            })}
-            tabBarOptions={{
-                activeTintColor: 'black',
-                inactiveTintColor: 'grey',
-                labelStyle: { paddingBottom: 10, fontSize: 10 },
-                style: { padding: 10, height: 100, paddingBottom: 50 },
-                elevation: 0,
-            }}
+                            </View>
+                        );
+                    },
+                })}
+                tabBarOptions={{
+                    activeTintColor: 'black',
+                    inactiveTintColor: 'grey',
+                    labelStyle: { paddingBottom: 10, fontSize: 10 },
+                    style: { padding: 10, height: 100, paddingBottom: 50 },
+                    elevation: 0,
+                }}
             >
-                <Tab.Screen name={conversationsName} component={ConversationScreen} options={{title: ''}} />
-                <Tab.Screen name={wavesName} component={WavesScreen} options={{title: ''}} />
-                <Tab.Screen name={contactsName} component={ContactsScreen} options={{title: ''}} />
-
+                <Tab.Screen name={conversationsName} component={ConversationScreen} options={{ title: '' }} />
+                <Tab.Screen name={wavesName} component={WavesScreen} options={{ title: '' }} />
+                <Tab.Screen name={contactsName} component={ContactsScreen} options={{ title: '' }} />
             </Tab.Navigator>
         </NavigationContainer>
     );
