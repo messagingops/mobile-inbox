@@ -24,7 +24,7 @@
     "@tamagui/metro-plugin": "^1.94.4",
     "@tamagui/static": "^1.90.16",
     "dotenv": "^16.4.5",
-    "expo": "~50.0.6",
+    "expo": "^51.0.5",
     "expo-dev-client": "~3.3.8",
     "expo-font": "~11.10.3",
     "expo-status-bar": "~1.11.1",
