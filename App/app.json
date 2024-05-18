@@ -1,6 +1,7 @@
 {
   "expo": {
     "plugins" : [
+      "@react-native-firebase/app",
       [
         "expo-font",
         {

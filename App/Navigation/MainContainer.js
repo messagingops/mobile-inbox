@@ -8,6 +8,7 @@ import { Image } from 'react-native';
 import conversationsIcon from './conversations.png';
 import contactsIcon from './contacts.png';
 import pushesIcon from './pushes.png';
+import LoginScreen from './screens/LoginScreen';
 
 // Screens
 import ConversationScreen from './screens/ConversationsScreen';
@@ -18,13 +19,14 @@ import WavesScreen from './screens/WavesScreen';
 const conversationsName = 'Conversations';
 const contactsName = 'Contacts';
 const wavesName = 'Waves';
+const loginName = 'Login';
 
 const Tab = createBottomTabNavigator();
 
 export default function MainContainer() {
     return(
         <NavigationContainer>
-            <Tab.Navigator initialRouteName={conversationsName}
+            <Tab.Navigator initialRouteName={loginName}
             screenOptions={({route}) => ({
                 tabBarIcon: ({color, size}) => {
                     let iconName;
@@ -35,6 +37,9 @@ export default function MainContainer() {
                     } else  if (rn === contactsName) {
                         iconName = contactsIcon;
                     } else if (rn === wavesName) {
+                        iconName = pushesIcon;
+                    }
+                    else if (rn === loginName) {
                         iconName = pushesIcon;
                     }
 
@@ -48,7 +53,8 @@ export default function MainContainer() {
                 style: { padding: 10, height: 100, paddingBottom: 50 },
                 elevation: 0,
             }}
-            >
+            >                
+                <Tab.Screen name={loginName} component={LoginScreen} options={{title: ''}}/>
                 <Tab.Screen name={conversationsName} component={ConversationScreen} options={{title: ''}}/>
                 <Tab.Screen name={contactsName} component={ContactsScreen} options={{title: ''}}/>
                 <Tab.Screen name={wavesName} component={WavesScreen} options={{title: ''}} />

@@ -3,12 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 import { YStack, Text, Image, Input, Button, Theme, ButtonIcon } from 'tamagui';
 import { useFonts } from 'expo-font';
 import SegmentedInput from './SegmentedInput';
-import { firebaseConfig } from '../../backend/src/firebaseClient';
+//import { firebaseConfig } from '../../backend/src/firebaseClient';
 import { set, ref } from "firebase/database";
 //import auth from '@react-native-firebase/auth';
-
-
-export default function App() {
+export default function LoginScreen({navigation}: {navigation: any}) {
   const [fontsLoaded] = useFonts({
     "poppins-black": require("../assets/fonts/Poppins/Poppins-Black.ttf"),
     "poppins-black-italic": require("../assets/fonts/Poppins/Poppins-BlackItalic.ttf"),
@@ -115,7 +113,7 @@ export default function App() {
             throw new Error('Function not implemented.');
           } } />
           <Button
-            onPress={handleVerifyCode}
+            onPress={() => navigation.navigate('ConversationScreen')}
             backgroundColor="#EFE811"
             width="50%"
             height="4.5%"

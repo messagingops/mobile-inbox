@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore/lite';
 
-const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: "AIzaSyCIkaKclMTfz90VOVHBSryyHrXdIuOb3Dw",
     authDomain: "volt-codelab.firebaseapp.com",
     projectId: "volt-codelab",
