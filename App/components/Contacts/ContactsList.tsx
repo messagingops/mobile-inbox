@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native/types';
+import { View, Text, FlatList } from 'react-native/types';
 
 interface Contact {
     id: number;
@@ -24,9 +24,9 @@ const ContactsList = () => {
     };
 
     return (
-        <View>
+        <FlatList>
             {contacts.map((contact) => renderContact(contact))}
-        </View>
+        </FlatList>
     );
 };
 
