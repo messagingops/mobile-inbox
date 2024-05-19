@@ -2,6 +2,8 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import React from 'react'
 import Icon from '../components/Icons'
 import ContactTab from '../components/Conversations/ConversationTab'
+import { useNavigation } from '@react-navigation/native';
+
 
 interface ContactItem {
     name: string;
@@ -63,10 +65,14 @@ const data: ContactItem[] = [
 
 const ConversationsScreen = () => {
   
-    const handlePress = (item: ContactItem) => {
-        
-    };
 
+    const navigation = useNavigation();
+
+    const handlePress = (item: ContactItem) => {
+        // @ts-ignore
+        navigation.navigate('MessageScreen', { contact: item });
+    };
+    
     const renderItem = ({ item }: { item: ContactItem }) => (
         <TouchableOpacity onPress={() => handlePress(item)}>
             <View style={styles.divider} />

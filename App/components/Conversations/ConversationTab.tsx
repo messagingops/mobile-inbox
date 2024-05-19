@@ -12,7 +12,6 @@ type ContactItemProps = {
 const ContactItem: React.FC<ContactItemProps> = ({ contactName, message, date, time }) => {
   return (
     <View>
-      
       <View style={styles.container}>
         <View style={styles.leftColumn}>
           <Text style={styles.contactName}>{contactName}</Text>
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
   contactName: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#707070',
+    color: '#505050',
     
   },
   message: {

@@ -1,5 +1,5 @@
-import { Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import { Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import Icon from './Icons'
 import { TamaguiProvider, TextArea, Theme, Button} from 'tamagui'
 import { View ,createTamagui} from '@tamagui/core';
@@ -8,6 +8,12 @@ import { AlarmClock, ArrowRight } from '@tamagui/lucide-icons'
 import { MoveRight } from 'lucide-react-native';
 import SentMessage from './SentMessage';
 import ReceivedMessage from './ReceivedMessage';
+
+import { useRoute } from '@react-navigation/native';
+
+import { useNavigation } from '@react-navigation/native';
+
+
 
 
 // you usually export this from a tamagui.config.ts file
@@ -22,20 +28,35 @@ declare module '@tamagui/core' {
 
 const MessageScreen = () => {
 
+  
+
   const [messages, setMessages] = useState([
     { id: 1, text: "Hello there!", type: 'received' },
     { id: 2, text: "Hi! How are you?", type: 'sent' },
     { id: 3, text: "Hi! How are you? like bruh bruh bruh bruhbruhbuhruiehfivuhrqiuhviuerh", type: 'sent' }
   ]);
 
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  useEffect(() => {
+        navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' }, tabBarVisible: false });
+        return () =>
+            navigation.getParent()?.setOptions({ tabBarStyle: undefined, tabBarVisible: undefined });
+    }, [navigation]);
+  // @ts-ignore
+  const { contact } = route.params;
+
   return (
     <TamaguiProvider config={tamaguiConfig}>
       <Theme name="light">
         <View style={styles.container}>
-          <View style={styles.top}>
-            <Icon name="ArrowLeft" color="#707070" size={24}/>        
-            <Text style={styles.title}>Jerry Wu</Text>
-          </View>
+        <View style={styles.top}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Icon name="ArrowLeft" color="#707070" size={24} />
+          </TouchableOpacity>
+          <Text style={styles.title}>Jerry Wu</Text>
+        </View>
           <KeyboardAvoidingView style={styles.bottom} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <ScrollView style={{flex: 1}}>
               {messages.map(message => 
@@ -67,7 +88,7 @@ const styles = StyleSheet.create({
     marginTop: 80,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between',  // Ensures elements are spaced evenly
     marginBottom: 20,
     backgroundColor: '#FFF', 
     paddingHorizontal: 32,
@@ -75,9 +96,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    flex: 1,
-    marginLeft: -24,
     textAlign: 'center',
+    marginRight: 24,
+    flex: 1,  // Allows the title to use available space and center properly
+  },
+  backButton: {
+    width: 24,  // Ensures a minimum touchable area
+    height: 24,  // Ensures a minimum touchable area
+    justifyContent: 'center',  // Center icon vertically
+    alignItems: 'center',  // Center icon horizontally
   },
   bottom: {
     flex: 1,
