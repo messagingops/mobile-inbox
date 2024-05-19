@@ -134,7 +134,7 @@ const ContactsScreen = () => {
           <View style={styles.topCont}>
             {selectedScreen === 'Contacts' && (
               <TouchableOpacity onPress={handleNewContact}>
-                <Feather name='plus-circle' size={24} color='blue' />
+                <Feather name='plus-circle' size={24} color='gray' />
               </TouchableOpacity>
             )}
           </View>
