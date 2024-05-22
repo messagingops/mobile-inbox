@@ -103,6 +103,8 @@ const ContactsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      
+      
       {selectedContact ? (
         <ContactDetails
           firstName={selectedContact.firstName}
@@ -111,19 +113,12 @@ const ContactsScreen = () => {
           onBackPress={handleBackPress}
           updateContact={updateContact}
         />
-      ) : isNewContact ? ( // Check if it's a new contact
-        <ContactDetails
-          firstName="" // Pass empty strings for new contact
-          lastName=""
-          phoneNumber=""
-          onBackPress={handleBackPress}
-          updateContact={updateContact}
-        />
       ) : (
         <>
           <View style={styles.topCont}>
+
             <TouchableOpacity onPress={handleNewContact}>
-              <Feather name="plus-circle" size={24} color="blue" />
+            <Feather name="plus-circle" size={24} color="blue" />
             </TouchableOpacity>
           </View>
           <TextInput

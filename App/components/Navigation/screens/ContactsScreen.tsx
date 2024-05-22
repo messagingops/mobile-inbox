@@ -69,6 +69,7 @@ const ContactsScreen = () => {
       const newContact = { firstName: newName.split(' ')[0], lastName: newName.split(' ')[1] };
       updatedContacts = [...originalContacts, newContact];
     }
+    updatedContacts.sort((a, b) => a.firstName.localeCompare(b.firstName)); // Sort the contacts alphabetically
     setOriginalContacts(updatedContacts);
     setFilteredContacts(updatedContacts);
     setIsNewContact(false);
@@ -100,7 +101,7 @@ const ContactsScreen = () => {
   const renderItem = ({ item }: { item: { firstName: string; lastName: string } }) => (
     <TouchableOpacity onPress={() => handleContactPress(item)}>
       <View style={{ padding: 10 }}>
-        <Text>{item.firstName}</Text>
+        <Text style={styles.nameText} >{item.firstName}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -170,6 +171,7 @@ const ContactsScreen = () => {
 
 export default ContactsScreen;
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -189,4 +191,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 10,
   },
+  nameText: {
+    
+  }
 });
