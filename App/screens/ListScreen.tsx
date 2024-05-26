@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const WavesScreen = () => {
+const ListScreen = () => {
   return (
     <View>
-      <Text>WavesScreen</Text>
+      <Text>ListScreen</Text>
     </View>
   )
 }
 
-export default WavesScreen
+export default ListScreen
 
 const styles = StyleSheet.create({})

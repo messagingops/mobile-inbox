@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MainContainer from './components/Navigation/MainContainer'
+import MainContainer from './navigation/MainContainer';
 import { StatusBar } from 'expo-status-bar';
 import { Alert, View, StyleSheet } from 'react-native';
 
@@ -73,9 +73,9 @@ export default function App() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
 });
-

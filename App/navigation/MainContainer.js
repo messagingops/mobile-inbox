@@ -10,46 +10,15 @@ import contactsIcon from './contacts.png';
 import pushesIcon from './pushes.png';
 
 // Screens
-import ConversationScreen from '../../screens/ConversationsScreen';
-import ContactsScreen from './screens/ContactsScreen';
-import WavesScreen from './screens/WavesScreen';
-import MessageScreen from '../MessageScreen'
-
-import { createStackNavigator } from '@react-navigation/stack';
-
-
-import { LogBox } from 'react-native';
-
-LogBox.ignoreLogs(['Warning: ...']); 
-
+import ConversationsScreen from '../screens/ConversationsScreen';
+import ContactsScreen from '../screens/ContactsScreen';
+import WavesScreen from '../screens/WavesScreen';
 // Screen names
 const conversationsName = 'Conversations';
 const contactsName = 'Contacts';
 const wavesName = 'Waves';
 
-
 const Tab = createBottomTabNavigator();
-
-const ConversationStack = createStackNavigator();
-
-function ConversationStackScreen() {
-    return (
-        <ConversationStack.Navigator>
-            <ConversationStack.Screen 
-                name="Conversations" 
-                component={ConversationScreen} 
-                options={{ headerShown: false }}
-                
-            />
-            <ConversationStack.Screen 
-                name="MessageScreen" 
-                component={MessageScreen} 
-                options={{ headerShown: false}} 
-                
-            />
-        </ConversationStack.Navigator>
-    );
-}
 
 // Load custom fonts
 async function loadFonts() {
@@ -118,28 +87,18 @@ export default function MainContainer() {
                             </View>
                         );
                     },
-
-                    tabBarStyle: {
-                        height: 120, 
-                      },
                 })}
                 tabBarOptions={{
                     activeTintColor: 'black',
                     inactiveTintColor: 'grey',
-
                     labelStyle: { paddingBottom: 10, fontSize: 10 },
-                    style: { padding: 10, height: 120, paddingBottom: 50 },
+                    style: { padding: 10, height: 100, paddingBottom: 50 },
                     elevation: 0,
                 }}
-                
             >
-                <Tab.Screen 
-                    name="Conversations" 
-                    component={ConversationStackScreen} 
-                    options={{ title: '', headerShown: false }}
-                />
-                <Tab.Screen name={wavesName} component={WavesScreen} options={{ title: '' }} />
-                <Tab.Screen name={contactsName} component={ContactsScreen} options={{ title: '' }} />
+                <Tab.Screen name={conversationsName} component={ConversationsScreen} options={{ title: '', headerShown: false }} />
+                <Tab.Screen name={wavesName} component={WavesScreen} options={{ title: '', headerShown: false }} />
+                <Tab.Screen name={contactsName} component={ContactsScreen} options={{ title: '', headerShown: false }} />
             </Tab.Navigator>
         </NavigationContainer>
     );
