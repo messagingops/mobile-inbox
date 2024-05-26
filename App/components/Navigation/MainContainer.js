@@ -39,6 +39,7 @@ function ConversationStackScreen() {
                 name="Conversations" 
                 component={ConversationScreen} 
                 options={{ headerShown: false }}
+                
             />
             <ConversationStack.Screen 
                 name="MessageScreen" 

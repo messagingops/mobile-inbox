@@ -42,7 +42,7 @@ const MessageScreen = () => {
   useEffect(() => {
         navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' }, tabBarVisible: false });
         return () =>
-            navigation.getParent()?.setOptions({ tabBarStyle: undefined, tabBarVisible: undefined });
+            navigation.getParent()?.setOptions({ tabBarStyle: {height: 120, }, tabBarVisible: undefined });
     }, [navigation]);
   // @ts-ignore
   const { contact } = route.params;
