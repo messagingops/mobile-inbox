@@ -2,6 +2,7 @@ import express, { Router, Request, Response } from "express";
 import apolloClient from '../apolloClient';
 import { ApolloError } from '@apollo/client';
 import { gql } from '@apollo/client/core';
+import client from "../apolloClient";
 
 const router: Router = Router();
 
@@ -79,9 +80,34 @@ router.post('/', async (req, res) => {
     
   });
 
-router.get('/', (req: Request, res: Response) => {
-    res.send('GET Request sent to messages')
-})
+  router.get("/:to/:from/:before?", async (req: Request, res: Response) => {
+    const { to, from, before } = req.params;  // Extract 'to', 'from', and optionally 'before' from URL path segments
+  
+    const queryText = gql`
+      query conversation($to: String!, $from: String!, $before: String) {
+        conversation(to: $to, from: $from, before: $before) {
+          messages {
+            sentAt,
+            fromNumber,
+            body,
+            statusDescription,
+          }
+        }
+      }
+    `;
+  
+    try {
+      const result = await client.query({
+        query: queryText,
+        variables: { to, from, before: before || null }, // Use 'null' or another default if 'before' is not provided
+      });
+      res.json(result.data);
+    } catch (error) {
+      console.error("Error fetching conversation:", error);
+      res.status(500).json({ error: "Failed to fetch conversation" });
+    }
+  });
+  
 
 router.put('/', (req: Request, res: Response) => {
     res.send('PUT Request sent to messages')
