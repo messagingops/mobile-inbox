@@ -3,6 +3,7 @@ import client from "../apolloClient";
 import { gql } from "@apollo/client";
 
 const router: Router = Router();
+router.use(express.json())
 
 router.post("/", async (req: Request, res: Response) => {
   const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
@@ -45,6 +46,38 @@ router.post("/", async (req: Request, res: Response) => {
   }
 });
 
+router.get("/", async (req: Request, res: Response) => {
+  const { primaryPhone, phoneNumber } = req.body;
+
+  const queryText = gql`
+    query contact($primaryPhone: String!, $phoneNumber: String!) {
+      contact(primaryPhone: $primaryPhone, phoneNumber: $phoneNumber) {
+        name
+        mappedNumber
+        lastUpdatedAt
+        blocked
+        lists {
+          name
+          size
+        }
+      }
+    }
+  `;
+
+  try {
+    const result = await client.query({
+      query: queryText,
+      variables: { primaryPhone, phoneNumber },
+    });
+    res.json(result.data);
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).json({ error: "Failed to get user" });
+  }
+}
+);
+
+/* Aarav's original code
 router.get("/:primaryPhone/:phoneNumber", async (req: Request, res: Response) => {
     const { primaryPhone, phoneNumber } = req.params;
 
@@ -71,6 +104,7 @@ router.get("/:primaryPhone/:phoneNumber", async (req: Request, res: Response) =>
     }
   }
 );
+*/ 
 
 router.put("/", async (req: Request, res: Response) => {
   const { name, phoneNumber, accountPhone, customFields, blocked } = req.body;
