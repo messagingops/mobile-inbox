@@ -28,3 +28,5 @@ const ConversationList = () => {
         </View>
     )
 }
+
+export default ConversationList
