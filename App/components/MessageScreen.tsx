@@ -4,6 +4,7 @@ import { Button } from 'react-native-paper';
 import Icon from './Icons';
 import { RouteProp, useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SentMessage from './SentMessage';
 import ReceivedMessage from './ReceivedMessage';
 
@@ -22,18 +23,21 @@ type Message = {
 };
 
 const MessageScreen = () => {
-
   
-
-  const [messages, setMessages] = useState<Message[]>([]);
   const navigation = useNavigation<NavigationProp<any>>();
-  const [initialScrollDone, setInitialScrollDone] = useState(false);
-  const scrollViewRef = useRef<ScrollView>(null);
+  
   useEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' }, tabBarVisible: false });
     return () =>
         navigation.getParent()?.setOptions({ tabBarStyle: {height: 120, }, tabBarVisible: undefined });
   }, [navigation]);
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState<string>('');
+ 
+  const [initialScrollDone, setInitialScrollDone] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
+  
 
   const route = useRoute<RouteProp<Record<string, RouteParams>, string>>();
   const { contact } = route.params;
@@ -65,6 +69,30 @@ const MessageScreen = () => {
     }
   }, [messages]);
 
+  const sendMessage = async () => {
+    if (!newMessage.trim()) return;
+
+    try {
+      const response = await axios.post('http://localhost:3000/messages', {
+        to: contact.phoneNumber,
+        from: contact.myPhoneNumber,
+        body: newMessage,
+      });
+
+      const sentMessage: Message = {
+        id: response.data.createMessage.sentAt,
+        text: response.data.createMessage.body,
+        type: 'sent',
+      };
+
+      setMessages((prevMessages) => [...prevMessages, sentMessage]);
+      setNewMessage('');
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.top}>
@@ -87,11 +115,18 @@ const MessageScreen = () => {
           <View style={{ height: 20 }} /> 
         </ScrollView>
         <View style={styles.inputArea}>
-          <TextInput style={styles.input} selectionColor="#EFE811" placeholder="Type a message..." placeholderTextColor="#2E2E2E" />
+          <TextInput 
+            style={styles.input} 
+            selectionColor="#EFE811" 
+            placeholder="Type a message..." 
+            placeholderTextColor="#2E2E2E" 
+            value={newMessage}
+            onChangeText={setNewMessage}
+            />
           <TouchableOpacity style={styles.buttonOne} onPress={() => console.log('Alarm Clock pressed')}>
             <Icon name="AlarmClock" size={24} color="#161616" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonTwo} onPress={() => console.log('Arrow Right pressed')}>
+          <TouchableOpacity style={styles.buttonTwo} onPress={sendMessage}>
             <Icon name="ArrowRight" size={24} color="#161616" />
           </TouchableOpacity>
         </View>
