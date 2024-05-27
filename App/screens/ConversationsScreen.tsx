@@ -42,7 +42,11 @@ const ConversationsScreen = () => {
 
     const handlePress = (item: ContactItem) => {
         // @ts-ignore
-        navigation.navigate('MessageScreen', { contact: item });
+        navigation.navigate('MessageScreen', { contact: {
+            name: item.name,
+            phoneNumber: item.number,
+            myPhoneNumber: "+19185175752"
+          }});
     };
     
     const renderItem = ({ item }: { item: ContactItem }) => (

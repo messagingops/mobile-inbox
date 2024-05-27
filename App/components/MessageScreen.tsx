@@ -1,79 +1,102 @@
-import { Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import Icon from './Icons'
-import { TamaguiProvider, TextArea, Theme, Button} from 'tamagui'
-import { View ,createTamagui} from '@tamagui/core';
-import { config } from '@tamagui/config/v3'
-import { AlarmClock, ArrowRight } from '@tamagui/lucide-icons'
-import { MoveRight } from 'lucide-react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Text, StyleSheet, TextInput, Platform, KeyboardAvoidingView, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Button } from 'react-native-paper';
+import Icon from './Icons';
+import { RouteProp, useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
+import axios from 'axios';
 import SentMessage from './SentMessage';
 import ReceivedMessage from './ReceivedMessage';
 
-import { useRoute } from '@react-navigation/native';
+type RouteParams = {
+  contact: {
+    name: string;
+    phoneNumber: string;
+    myPhoneNumber: string;
+  };
+};
 
-import { useNavigation } from '@react-navigation/native';
-
-
-
-
-// you usually export this from a tamagui.config.ts file
-const tamaguiConfig = createTamagui(config)
-
-// make TypeScript type everything based on your config
-type Conf = typeof tamaguiConfig
-declare module '@tamagui/core' {
-  interface TamaguiCustomConfig extends Conf {}
-}
-
+type Message = {
+  id: string;
+  text: string;
+  type: 'sent' | 'received';
+};
 
 const MessageScreen = () => {
 
   
 
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello there!", type: 'received' },
-    { id: 2, text: "Hi! How are you?", type: 'sent' },
-    { id: 3, text: "Hi! How are you? like bruh bruh bruh bruhbruhbuhruiehfivuhrqiuhviuerh", type: 'sent' }
-  ]);
-
-  const navigation = useNavigation();
-  const route = useRoute();
-
+  const [messages, setMessages] = useState<Message[]>([]);
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [initialScrollDone, setInitialScrollDone] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
   useEffect(() => {
-        navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' }, tabBarVisible: false });
-        return () =>
-            navigation.getParent()?.setOptions({ tabBarStyle: {height: 120, }, tabBarVisible: undefined });
-    }, [navigation]);
-  // @ts-ignore
+    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' }, tabBarVisible: false });
+    return () =>
+        navigation.getParent()?.setOptions({ tabBarStyle: {height: 120, }, tabBarVisible: undefined });
+  }, [navigation]);
+
+  const route = useRoute<RouteProp<Record<string, RouteParams>, string>>();
   const { contact } = route.params;
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/messages/${contact.phoneNumber}/${contact.myPhoneNumber}`);
+        const fetchedMessages: Message[] = response.data.conversation.messages.map((msg: any) => ({
+          id: msg.sentAt,
+          text: msg.body,
+          type: msg.statusDescription === "delivered" ? 'sent' : 'received'
+        }))
+        .reverse();
+        setMessages(fetchedMessages);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+
+    fetchMessages();
+  }, [navigation, contact.phoneNumber, contact.myPhoneNumber]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: false });
+      }, 0);
+    }
+  }, [messages]);
+
   return (
-    <TamaguiProvider config={tamaguiConfig}>
-      <Theme name="light">
-        <View style={styles.container}>
-        <View style={styles.top}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Icon name="ArrowLeft" color="#707070" size={24} />
+    <View style={styles.container}>
+      <View style={styles.top}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Icon name="ArrowLeft" color="#707070" size={24} />
+        </TouchableOpacity>
+        <Text style={styles.title}>{contact.name}</Text>
+      </View>
+      <KeyboardAvoidingView style={styles.bottom} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <ScrollView
+          ref={scrollViewRef}
+          style={styles.scrollView}
+          contentContainerStyle={styles.contentContainer}
+        >
+          {messages.map(message => 
+            message.type === 'sent' ? 
+              <SentMessage key={message.id} message={message.text} /> : 
+              <ReceivedMessage key={message.id} message={message.text} />
+          )}
+          <View style={{ height: 20 }} /> 
+        </ScrollView>
+        <View style={styles.inputArea}>
+          <TextInput style={styles.input} selectionColor="#EFE811" placeholder="Type a message..." placeholderTextColor="#2E2E2E" />
+          <TouchableOpacity style={styles.buttonOne} onPress={() => console.log('Alarm Clock pressed')}>
+            <Icon name="AlarmClock" size={24} color="#161616" />
           </TouchableOpacity>
-          <Text style={styles.title}>Jerry Wu</Text>
+          <TouchableOpacity style={styles.buttonTwo} onPress={() => console.log('Arrow Right pressed')}>
+            <Icon name="ArrowRight" size={24} color="#161616" />
+          </TouchableOpacity>
         </View>
-          <KeyboardAvoidingView style={styles.bottom} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <ScrollView style={{flex: 1}}>
-              {messages.map(message => 
-                message.type === 'sent' ? 
-                  <SentMessage key={message.id} message={message.text} /> : 
-                  <ReceivedMessage key={message.id} message={message.text} />
-              )}
-            </ScrollView>
-            <View style={styles.inputArea}>
-              <TextInput style={styles.input} selectionColor="#EFE811" placeholder="Type a message..." placeholderTextColor="#2E2E2E" />
-              <Button style={styles.buttonOne} icon={<Icon name="AlarmClock" size={24} color="#161616" />} />
-              <Button style={styles.buttonTwo} icon={<Icon name="ArrowRight" size={24} color="#161616" />} />
-            </View>
-          </KeyboardAvoidingView>
-        </View>
-      </Theme>
-    </TamaguiProvider>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
@@ -105,6 +128,14 @@ const styles = StyleSheet.create({
     height: 24,  // Ensures a minimum touchable area
     justifyContent: 'center',  // Center icon vertically
     alignItems: 'center',  // Center icon horizontally
+  },
+  contentContainer: {
+    flexGrow: 1,
+  },
+  
+  
+  scrollView: {
+    paddingVertical: 10,
   },
   bottom: {
     flex: 1,
@@ -138,11 +169,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   buttonOne: {
-    width: 33,
-      height: 33,
+      width: 40,
+      height: 40,
       backgroundColor: "#EDEDED", 
       borderTopRightRadius: 0, // Rounded top-left corner
       borderBottomRightRadius: 0, // Rounded bottom-left corner
+      borderTopLeftRadius: 12.73,
+      borderBottomLeftRadius: 12.73,
+      justifyContent: 'center',
+    alignItems: 'center',
       marginRight: 1,
       shadowColor: '#000',  // Defines the color of the shadow
     shadowOffset: { width: 0, height: 5.09 },  // Specifies the X and Y offset of the shadow
@@ -151,11 +186,15 @@ const styles = StyleSheet.create({
     elevation: 5.09,  // For Android, adds a material design elevation shadow
   },
   buttonTwo: {
-    width: 33,
-    height: 33,
+    width: 40,
+    height: 40,
     backgroundColor: "#EDEDED", 
+    justifyContent: 'center',
+    alignItems: 'center',
     borderTopLeftRadius: 0, // Rounded top-right corner
     borderBottomLeftRadius: 0, // Rounded bottom-right corner
+    borderTopRightRadius: 12.73,
+    borderBottomRightRadius: 12.73,
     shadowColor: '#000',  // Defines the color of the shadow
     shadowOffset: { width: 0, height: 5.09 },  // Specifies the X and Y offset of the shadow
     shadowOpacity: 0.25,  // The opacity of the shadow
