@@ -24,6 +24,7 @@
     "@tamagui/lucide-icons": "^1.94.4",
     "@tamagui/metro-plugin": "^1.94.4",
     "@tamagui/static": "^1.90.16",
+    "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "expo": "^51.0.5",
     "expo-dev-client": "~3.3.8",

@@ -12,6 +12,7 @@ router.get("/:from/:before?", async (req: Request, res: Response) => {
            inbox(from: $from, before: $before) {
                items { 
                    contact {
+                       phoneNumber,
                        name,
                    },
                    lastMessage,

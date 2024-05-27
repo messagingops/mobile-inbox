@@ -1,72 +1,44 @@
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
-import React from 'react'
 import Icon from '../components/Icons'
 import ContactTab from '../components/Conversations/ConversationTab'
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 
 interface ContactItem {
     name: string;
+    number: string;
     message: string;
     date: string;
     time: string;
   }
 
-const data: ContactItem[] = [
-    {
-        name: "Jerry Wu",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Daniel Kim",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Danielle Koay",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Avery Li",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Jerry Wu",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Daniel Kim",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Danielle Koay",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-    {
-        name: "Avery Li",
-        message: "Hello, this is a test", 
-        date: '04/11/24',
-        time: '12:23pm',
-    },
-]
-
 const ConversationsScreen = () => {
   
 
     const navigation = useNavigation();
+    const [contacts, setContacts] = useState<ContactItem[]>([]);
+
+    useEffect(() => {
+        const fetchContacts = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/inbox/+19185175752'); // Update URL with your API endpoint
+                const fetchedContacts = response.data.inbox.items.map((item: any) => ({
+                    name: item.contact.name,
+                    number: item.contact.phoneNumber,
+                    message: item.lastMessage,
+                    date: new Date(item.lastMessageTime).toLocaleDateString(),
+                    time: new Date(item.lastMessageTime).toLocaleTimeString([], { timeStyle: 'short' }),
+                }));
+                setContacts(fetchedContacts);
+            } catch (error) {
+                console.error('Failed to fetch contacts', error);
+            }
+        };
+
+        fetchContacts();
+    }, []);
 
     const handlePress = (item: ContactItem) => {
         // @ts-ignore
@@ -95,7 +67,7 @@ const ConversationsScreen = () => {
         </View>
         
         <FlatList
-            data={data}
+            data={contacts}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}
