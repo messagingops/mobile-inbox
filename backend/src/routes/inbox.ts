@@ -1,61 +1,39 @@
 import express, { Router, Request, Response } from "express";
-import { gql } from '@apollo/client/core'
-import apolloClient from '../apolloClient'
+import client from "../apolloClient";
+import { gql } from "@apollo/client";
 
-const router: Router = Router()
+const router: Router = Router();
 
-router.use(express.urlencoded({ extended: false }));
-router.use(express.json())
+router.get("/:from/:before?", async (req: Request, res: Response) => {
+   const { from, before } = req.params;  // Extract 'from' and 'before' from URL path segments
 
-// GraphQL inbox query syntax
-// include list in items -> contact?
-const INBOX_QUERY = gql`
-      query inbox(
-         $from: String!,
-         $before: String
-      ) {
-         inbox(
-         from: $from,
-         before: $before
-         ) {
-         items {
-            contact {
-               phoneNumber
-            }
-         }
-         pageInfo {
-            totalItems, 
-            nextPage, 
-            hasNextPage
-         }
-         }
-      }
-   `
-
-   router.get('/', async (req, res) => {
-   const { from, before = null} = req.body;
+   const queryText = gql`
+       query inbox($from: String!, $before: String) {
+           inbox(from: $from, before: $before) {
+               items { 
+                   contact {
+                       phoneNumber,
+                       name,
+                   },
+                   lastMessage,
+                   isUnread,
+                   lastMessageTime
+               }
+           }
+       }
+   `;
 
    try {
-      // Make the mutation request using Apollo Client
-      const response = await apolloClient.mutate({
-         mutation: INBOX_QUERY,
-         variables: { from, before },
-         errorPolicy: 'all'
-       });
-       console.log()
-
-router.get('/', (req: Request, res: Response) => {
-   res.send('GET Request sent to inbox')
-})
-       if (response.data && response.errors) {
-         console.log("Operation partially succeeded:", response.data);
-         console.log("But encountered errors:", response.errors);
-       } else {
-         res.json(response.data);
-       }  
+     const result = await client.query({
+       query: queryText,
+       variables: { from, before: before || null }, // Use 'null' or another default if 'before' is not provided
+     });
+     res.json(result.data);
    } catch (error) {
-      console.log(error)
-   }   
+     console.error("Error getting user:", error);
+     res.status(500).json({ error: "Failed to get user" });
+   }
 });
+
 
 export default router;
