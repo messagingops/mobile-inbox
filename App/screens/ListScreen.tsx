@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import ListDetails from "./ListDetails";
 import { Ionicons } from "@expo/vector-icons";
 import List from "./ListDetails"
-import Icon from '../components/Icons'
+import Icon from '../components/Conversations/Icons'
 
 /*
 // Populates list array

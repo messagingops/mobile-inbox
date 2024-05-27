@@ -11,7 +11,7 @@ import {
 import ListScreen from './ListScreen';
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from 'expo-checkbox';
-import Icon from '../components/Icons'
+import Icon from '../components/Conversations/Icons'
 
 interface List {
   listName: string

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import Icon from '../Icons'
+import Icon from './Icons'
 
 type ContactItemProps = {
   contactName: string;

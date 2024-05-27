@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native'
-import Icon from '../components/Icons'
+import Icon from '../components/Conversations/Icons'
 import ContactTab from '../components/Conversations/ConversationTab'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';

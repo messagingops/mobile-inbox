@@ -18,7 +18,7 @@ import pushesIcon from './pushes.png';
 import ConversationsScreen from '../screens/ConversationsScreen';
 import ContactsScreen from '../screens/ContactsScreen';
 import WavesScreen from '../screens/WavesScreen';
-import MessageScreen from '../components/MessageScreen'
+import MessageScreen from '../components/Conversations/MessageScreen'
 // Screen names
 const conversationsName = 'Conversations';
 const contactsName = 'Contacts';
@@ -81,8 +81,8 @@ export default function MainContainer() {
                             <Image
                                 source={iconName}
                                 style={{
-                                    width: 30,
-                                    height: 30,
+                                    width: 25,
+                                    height: 25,
                                     tintColor: color,
                                     marginBottom: focused ? 15 : 10, // Moves the icon up when focused
                                 }}
