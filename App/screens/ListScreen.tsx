@@ -238,7 +238,7 @@ const ListsScreen = () => {
           <Icon name="Users" color="#707070" size={24} />
           <View style={styles.listItemDetails}>
             <Text style={styles.listItemSize}>
-              {item.size} {item.size === 1 ? 'contact' : '+'}
+              {item.size} {item.size === 1}
             </Text>
             <Text style={styles.listItemSize1}>
               {'view full list'}
