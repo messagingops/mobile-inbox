@@ -11,6 +11,7 @@ import {
 import ListScreen from './ListScreen';
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from 'expo-checkbox';
+import Icon from '../components/Icons'
 
 interface List {
   listName: string
@@ -152,10 +153,16 @@ const ListDetails: React.FC<List> = ({
       <Text style={styles.nameText}>{item.firstName}</Text>
     </TouchableOpacity>
   );
-
-  const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
-    <View style={{ backgroundColor: 'lightgray', padding: 10 }}>
-      <Text style={{ fontWeight: 'bold', fontFamily: 'Poppins' }}>{title}</Text>
+  
+  const renderSectionHeader = ({
+    section: { title },
+  }: {
+    section: { title: string };
+  }) => (
+    <View style={{ paddingHorizontal: 20 }}>
+    <View style={{ backgroundColor: "white", paddingHorizontal: 15, padding: 20, borderBottomWidth: 1, borderBottomColor: '#E0E0E0' }}>
+      <Text style={{ fontFamily: "Poppins", color: '#A9A9A9' }}>{title}</Text>
+    </View>
     </View>
   );
 
@@ -173,6 +180,7 @@ const ListDetails: React.FC<List> = ({
         />
         <TouchableOpacity onPress={handleDonePress}>
           <Text style={styles.backButtonText}>Done</Text>
+          
         </TouchableOpacity>
       </View>
       <SectionList
@@ -196,31 +204,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
-  listNameInput: {
-    flex: 1,
+   listNameInput: {
     height: 40,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 20, // Increase the borderRadius value
-    paddingHorizontal: 10,
-    marginHorizontal: 10,
-    fontFamily: 'Poppins', // Add the fontFamily property with the value 'Poppins'
+    borderColor: "gray",
+    flex: 1,
+    margin: 10,
+    fontSize: 18,
+    paddingLeft: 10,
+    borderRadius: 5, // Adjust this to make the edges slightly rounded
+    fontFamily: "Poppins",
+    backgroundColor: '#E8E8E8', // Add this line to shade the search bar light gray
   },
   backButtonText: {
-    color: 'blue',
+    color: 'black',
+    
     fontSize: 16,
     marginRight: 10,
     fontFamily: 'Poppins', // Add the fontFamily property with the value 'Poppins'
+    textDecorationLine: 'underline', // Add this line
   },
   contactRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
+    padding: 15,
+    flexDirection: 'row', // Add this line to make the checkbox and name appear side by side
+    alignItems: 'center', // Add this line to align the checkbox and name vertically  
+    borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1, // Change this to your desired width
+    marginHorizontal: 20, 
   },
   nameText: {
-    marginLeft: 10, // Add some spacing between the checkbox and name
+    marginLeft: 20, // Add some spacing between the checkbox and name
     fontFamily: 'Poppins', // Add the fontFamily property with the value 'Poppins'
+    fontSize: 17, // Increase this value to increase the size of the contact name
   },
 });

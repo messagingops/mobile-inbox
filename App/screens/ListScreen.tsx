@@ -5,6 +5,7 @@ import { AntDesign } from '@expo/vector-icons';
 import ListDetails from "./ListDetails";
 import { Ionicons } from "@expo/vector-icons";
 import List from "./ListDetails"
+import Icon from '../components/Icons'
 
 /*
 // Populates list array
@@ -233,10 +234,16 @@ const ListsScreen = () => {
     <TouchableOpacity onPress={() => handleListPress(item)} style={styles.listItemContainer}>
       <View style={styles.listItemContent}>
         <Text style={styles.listItemName}>{item.name}</Text>
-        <View style={styles.listItemDetails}>
-          <Text style={styles.listItemSize}>
-            {item.size} {item.size === 1 ? 'contact' : 'contacts'}
-          </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Icon name="Users" color="#707070" size={24} />
+          <View style={styles.listItemDetails}>
+            <Text style={styles.listItemSize}>
+              {item.size} {item.size === 1 ? 'contact' : '+'}
+            </Text>
+            <Text style={styles.listItemSize1}>
+              {'view full list'}
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -247,8 +254,10 @@ const ListsScreen = () => {
   }: {
     section: { title: string };
   }) => (
-    <View style={{ backgroundColor: "lightgray", padding: 10 }}>
-      <Text style={{ fontWeight: "bold", fontFamily: "Poppins" }}>{title}</Text>
+    <View style={{ paddingHorizontal: 20 }}>
+    <View style={{ backgroundColor: "white", paddingHorizontal: 15, padding: 20, borderBottomWidth: 1, borderBottomColor: '#E0E0E0' }}>
+      <Text style={{ fontFamily: "Poppins", color: '#A9A9A9' }}>{title}</Text>
+    </View>
     </View>
   );
 
@@ -279,16 +288,12 @@ const ListsScreen = () => {
               placeholder="Search..."
               onChangeText={updateSearch}
               value={search}
-              style={styles.listNameInput}
+              style={styles.searchBar}
             />
-          <TouchableOpacity onPress={handleNewList}>
-            <Text style={styles.backButtonText}>New</Text>
-          </TouchableOpacity>
-    
-
+        <TouchableOpacity onPress={handleNewList} style={{ marginLeft: 5, marginRight: 10 }}>
+          <Icon name="CirclePlus" color="#707070" size={24}/>        
+        </TouchableOpacity>
         </View>
-
-
           {Object.keys(sections).length > 0 ? (
             <SectionList
               sections={Object.keys(sections).map((key) => ({
@@ -317,18 +322,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: "center",
     fontFamily: "Poppins",
+      backgroundColor: 'white', // Add this line
+
   },
   searchBar: {
     height: 40,
     borderColor: "gray",
-    borderWidth: 1,
+    flex: 1,
     margin: 10,
+    fontSize: 18,
     paddingLeft: 10,
-    borderRadius: 20,
+    borderRadius: 5, // Adjust this to make the edges slightly rounded
     fontFamily: "Poppins",
+    backgroundColor: '#E8E8E8', // Add this line to shade the search bar light gray
   },
   backButtonText: {
-    color: 'blue',
+    color: 'black',
     fontSize: 16,
     marginRight: 10,
     fontFamily: "Poppins",
@@ -339,8 +348,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20
   },
   listItemContainer: {
-    padding: 10,
+    padding: 13,
     borderBottomColor: '#E0E0E0',
+    borderBottomWidth: 1, // Change this to your desired width
+    marginHorizontal: 20, 
   },
   listItemContent: {
     flexDirection: 'row',
@@ -348,25 +359,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   listItemName: {
-    fontSize: 14,
+    fontSize: 17,
     fontFamily: "Poppins",
   },
   listItemDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 4,
   },
   listItemSize: {
     marginRight: 8,
     color: 'gray',
     fontFamily: "Poppins",
   },
+  listItemSize1: {
+    fontStyle: 'italic',
+    marginRight: -10,
+    color: 'gray',
+  },
   listNameInput: {
     flex: 1,
     height: 40,
     borderWidth: 1,
+    fontSize: 18,
     borderColor: 'gray',
     borderRadius: 20, // Increase the borderRadius value
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
     marginHorizontal: 10,
     fontFamily: "Poppins",
   },
@@ -374,7 +392,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
   emptyContainer: {
     flex: 1,
