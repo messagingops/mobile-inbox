@@ -100,6 +100,7 @@ router.post('/', async (req, res) => {
       const result = await client.query({
         query: queryText,
         variables: { to, from, before: before || null }, // Use 'null' or another default if 'before' is not provided
+        fetchPolicy: 'no-cache'
       });
       res.json(result.data);
     } catch (error) {

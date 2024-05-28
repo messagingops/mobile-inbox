@@ -7,6 +7,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SentMessage from './SentMessage';
 import ReceivedMessage from './ReceivedMessage';
+import io from 'socket.io-client';
 
 type RouteParams = {
   contact: {
@@ -23,6 +24,8 @@ type Message = {
 };
 
 const MessageScreen = () => {
+
+  const serverURL = process.env.EXPO_PUBLIC_SERVER_URL;
   
   const navigation = useNavigation<NavigationProp<any>>();
   
@@ -42,24 +45,40 @@ const MessageScreen = () => {
   const route = useRoute<RouteProp<Record<string, RouteParams>, string>>();
   const { contact } = route.params;
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3000/messages/${contact.phoneNumber}/${contact.myPhoneNumber}`);
-        const fetchedMessages: Message[] = response.data.conversation.messages.map((msg: any) => ({
-          id: msg.sentAt,
-          text: msg.body,
-          type: msg.statusDescription === "delivered" ? 'sent' : 'received'
-        }))
-        .reverse();
-        setMessages(fetchedMessages);
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/messages/${contact.phoneNumber}/${contact.myPhoneNumber}`);
+      const fetchedMessages: Message[] = response.data.conversation.messages.map((msg: any) => ({
+        id: msg.sentAt,
+        text: msg.body,
+        type: msg.statusDescription === "delivered" ? 'sent' : 'received'
+      }))
+      .reverse();
+      setMessages(fetchedMessages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchMessages();
+
+    
+        // Set up WebSocket connection
+        const socket = io(`${serverURL}`); // Update with your server URL
+    
+        // Listen for incoming messages
+        socket.on('messageEvent', () => {
+          // Fetch contacts again when a new message event is received
+          fetchMessages();
+        });
+    
+        return () => {
+          socket.disconnect();
+        };
   }, [navigation, contact.phoneNumber, contact.myPhoneNumber]);
+
+  
 
   useEffect(() => {
     if (messages.length > 0) {

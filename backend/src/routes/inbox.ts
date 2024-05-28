@@ -27,6 +27,7 @@ router.get("/:from/:before?", async (req: Request, res: Response) => {
      const result = await client.query({
        query: queryText,
        variables: { from, before: before || null }, // Use 'null' or another default if 'before' is not provided
+       fetchPolicy: 'no-cache'
      });
      res.json(result.data);
    } catch (error) {
