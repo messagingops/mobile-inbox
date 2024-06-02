@@ -18,7 +18,8 @@ import pushesIcon from './pushes.png';
 import ConversationsScreen from '../screens/ConversationsScreen';
 import ContactsScreen from '../screens/ContactsScreen';
 import WavesScreen from '../screens/WavesScreen';
-import MessageScreen from '../components/Conversations/MessageScreen'
+import MessageScreen from '../components/Conversations/MessageScreen';
+import CreateContact from '../screens/CreateContact';
 // Screen names
 const conversationsName = 'Conversations';
 const contactsName = 'Contacts';
@@ -35,6 +36,7 @@ async function loadFonts() {
 }
 
 const ConversationStack = createStackNavigator();
+const ContactsStack = createStackNavigator();
 
 function ConversationStackScreen() {
     return (
@@ -52,6 +54,25 @@ function ConversationStackScreen() {
                 
             />
         </ConversationStack.Navigator>
+    );
+}
+
+function ContactsStackScreen() {
+    return (
+        <ContactsStack.Navigator>
+            <ConversationStack.Screen 
+                name="Contacts" 
+                component={ContactsScreen} 
+                options={{ headerShown: false }}
+                
+            />
+            <ContactsStack.Screen 
+                name="CreateContact" 
+                component={CreateContact} 
+                options={{ headerShown: false}} 
+                
+            />
+        </ContactsStack.Navigator>
     );
 }
 
@@ -133,7 +154,7 @@ export default function MainContainer() {
                     options={{ title: '', headerShown: false }}
                 />
                 <Tab.Screen name={wavesName} component={WavesScreen} options={{ title: '', headerShown: false }} />
-                <Tab.Screen name={contactsName} component={ContactsScreen} options={{ title: '', headerShown: false }} />
+                <Tab.Screen name={contactsName} component={ContactsStackScreen} options={{ title: '', headerShown: false }} />
             </Tab.Navigator>
         </NavigationContainer>
     );
