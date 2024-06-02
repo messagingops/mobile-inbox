@@ -5,6 +5,12 @@ import { useFonts } from 'expo-font';
 import SegmentedInput from './SegmentedInput';
 import { useNavigation } from '@react-navigation/native';
 
+import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from 'expo-firebase-recaptcha';
+import firebase from 'firebase/compat/app';
+import "firebase/compat/auth";
+import { firebaseConfig } from '../firebase/firebaseConfig';
+firebase.initializeApp(firebaseConfig);
+
 export default function AuthScreen() {
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({
@@ -27,19 +33,49 @@ export default function AuthScreen() {
     "poppins-thin": require("../assets/fonts/Poppins/Poppins-Thin.ttf"),
     "poppins-thin-italic": require("../assets/fonts/Poppins/Poppins-ThinItalic.ttf")
   });
+  const recaptchaVerifier: any = React.useRef(null);
   const [mobileNumber, setMobileNumber] = useState('');
-  const [verificationCode, setVerificationCode] = useState('');
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState('');
+  const [phoneNumber, setPhoneNumber]: any = React.useState();
+  const [verificationId, setVerificationId]: any = React.useState();
+  const [verificationCode, setVerificationCode]: any = React.useState();
+  const [message, showMessage]: any = React.useState();
+  const attemptInvisibleVerification = false;
+  const [faled, setFaled] = useState(false);
 
-  const handleSignIn = () => {
+
+  const handleSignIn = async () => {
     if (mobileNumber) {
-      setStep(2);
+      try {
+        const formattedMobileNumber = `+1${mobileNumber}`;
+        const phoneProvider = new firebase.auth.PhoneAuthProvider();
+        const verificationId = await phoneProvider.verifyPhoneNumber(
+          formattedMobileNumber,
+          recaptchaVerifier.current
+        );
+        setVerificationId(verificationId);
+        setStep(2);
+      }
+      catch (error) {
+        console.log(error);
+      }
     }
   };
 
-  const handleVerifyCode = () => {
-    navigation.navigate('Main');
+  const handleVerifyCode = async () => {
+    try {
+      const credential = firebase.auth.PhoneAuthProvider.credential(
+        verificationId,
+        verificationCode
+      );
+      await firebase.auth().signInWithCredential(credential);
+      navigation.navigate('Main');
+    }
+    catch (error) {
+      console.log(error);
+      setFaled(true);
+    }
   };
 
   return (
@@ -47,6 +83,11 @@ export default function AuthScreen() {
       <StatusBar style="auto" />
       {step === 1 && (
         <YStack flex={1} justifyContent="center" alignItems="center">
+          <FirebaseRecaptchaVerifierModal
+            ref={recaptchaVerifier}
+            firebaseConfig={firebaseConfig}
+            attemptInvisibleVerification={attemptInvisibleVerification}
+          />
           <Image
             source={require('../assets/mobile_icon.png')}
             width={156}
@@ -125,7 +166,11 @@ export default function AuthScreen() {
           >
             Please enter the 6-digit code we sent to your phone number
           </Text>
-          <SegmentedInput length={6} onChange={setVerificationCode} />
+          <SegmentedInput 
+            length={6} 
+            onChange={setVerificationCode} 
+            failed={faled}
+            />
           <Button
             onPress={handleVerifyCode}
             backgroundColor="#EFE811"
@@ -139,3 +184,4 @@ export default function AuthScreen() {
     </Theme>
   );
 }
+

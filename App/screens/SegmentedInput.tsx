@@ -1,5 +1,3 @@
-// credit to https://shiggins95.medium.com/create-a-smooth-segmented-text-input-in-react-native-30a2cd06f8c7 
-
 import React, { FC, Dispatch, useState, useRef } from 'react';
 import {
   View,
@@ -13,22 +11,21 @@ import { TextInputKeyPressEventData } from 'react-native/Libraries/Components/Te
 interface SegmentedInputProps {
   length: number;
   onChange: Dispatch<string>;
+  failed?: boolean; // New prop for failure state
 }
 
 interface RefMapping {
   [key: number]: TextInput | null;
 }
 
-const SegmentedInput: FC<SegmentedInputProps> = ({ length, onChange }) => {
+const SegmentedInput: FC<SegmentedInputProps> = ({ length, onChange, failed }) => {
   const refs = useRef<RefMapping>({});
   const [code, setCode] = useState(Array.from({ length: length }, () => ''));
   const [focusedIndex, setFocusedIndex] = useState(0);
   const { width } = Dimensions.get('window');
 
   const handleType = (value: string, index: number) => {
-    // check if there is no value but there previously was a value
     const hasDeleted = !value && code[index] !== '';
-    // map through the current code and alter the current value that's been edited
     const currentCode = code.map((curr, i) => {
       if (i === index) {
         return value;
@@ -36,14 +33,10 @@ const SegmentedInput: FC<SegmentedInputProps> = ({ length, onChange }) => {
       return curr;
     });
 
-    // if we haven't deleted, and we aren't on the last input, then move onto the next ref
     if (!hasDeleted && index < length - 1) {
       refs.current[index + 1]?.focus();
     }
-    // set local state (array) code
     setCode(currentCode);
-
-    // set the parent components state. As this expects a string, we can just use .join('')
     onChange(currentCode.join(''));
   };
 
@@ -58,7 +51,6 @@ const SegmentedInput: FC<SegmentedInputProps> = ({ length, onChange }) => {
     event: NativeSyntheticEvent<TextInputKeyPressEventData>,
     index: number,
   ) => {
-    // listen for the backspace key being pressed and if we aren't on the first input then move the focused input back
     if (event.nativeEvent.key === 'Backspace' && index !== 0 && !code[index]) {
       refs.current[index - 1]?.focus();
     }
@@ -79,12 +71,9 @@ const SegmentedInput: FC<SegmentedInputProps> = ({ length, onChange }) => {
             style={[
               styles.input,
               isFocused ? styles.focused : null,
+              failed ? styles.failed : null,
               {
-                width: 
-                  (width - 
-                    (length - 1) * 10 -
-                    45) /
-                  length,
+                width: (width - (length - 1) * 10 - 45) / length,
               },
             ]}
             keyboardType='numeric'
@@ -103,6 +92,9 @@ export const styles = StyleSheet.create({
     marginBottom: 30,
     position: 'relative',
   },
+  failed: {
+    borderColor: 'red', // Red border color for failed state
+  },  
   input: {
     justifyContent: 'center',
     alignItems: 'center',
