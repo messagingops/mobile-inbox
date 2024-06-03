@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { TouchableOpacity, StyleSheet, Text, View, SafeAreaView, SectionList, TextInput } from "react-native";
+import { TouchableOpacity, StyleSheet, Text, View, SafeAreaView, SectionList, TextInput, ActivityIndicator } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons';
 import ListDetails from "./ListDetails";
@@ -120,9 +121,9 @@ async function populateListsArr()
 }
 */
 
- async function populateListsArr() {
-  return listsBank;
- }
+//  async function populateListsArr() {
+//   return listsBank;
+//  }
 
 const listsBank = [
   { name: "Developers", size: 6, contacts: [{ firstName: 'Daniel', lastName: 'Kim' }, { firstName: 'Lena', lastName: 'Ray' }, { firstName: 'Arnav', lastName: 'Rastogi' }, { firstName: 'Aarav', lastName: 'Urgaonkar' }, { firstName: 'Avery', lastName: 'Li' }, { firstName: 'Aryan', lastName: 'Gorwade' }] },
@@ -144,23 +145,108 @@ const allContacts = [
 ];
 
 const ListsScreen = () => {
-  const [sortedLists, setSortedLists] = useState<{ name: string, size: number, contacts: { firstName: string; lastName: string }[] }[]>([]);
+  const [sortedLists, setSortedLists] = useState([]);
   const [search, setSearch] = useState("");
-  const [selectedList, setSelectedList] = useState<{
-    name: string;
-    size: number
-    contacts: { firstName: string; lastName: string }[];
-  } | null>(null);
+  const [selectedList, setSelectedList] = useState(null);
+  const [selectedScreen, setSelectedScreen] = useState('Contacts'); // New state for selected screen
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [allContacts, setAllContacts] = useState([]);
 
+  const fetchContacts = async () => {
+    try {
+      console.log('Fetching contacts from http://localhost:3000/inbox/+19185175752');
+      const response = await axios.get('http://localhost:3000/inbox/+19185175752');
+      console.log('Response:', response.data);
+  
+      // Extract phone numbers from the inbox data
+      const phoneNumbers = response.data.inbox.items.map((item: any) => item.contact.phoneNumber);
+  
+      // Fetch contacts using phone numbers
+      const fetchedContacts = await Promise.all(phoneNumbers.map(async (phoneNumber: string) => {
+        try {
+          console.log('Fetching contact for phone number:', phoneNumber);
+          const contactResponse = await axios.get('http://localhost:3000/contacts', {
+            params: {
+              primaryPhone: '+19185175752',
+              phoneNumber: phoneNumber,
+            }
+          });
+          console.log('Contact response:', contactResponse.data);
+
+          const contactData = contactResponse.data;
+          const contactName = contactData.contact.name;
+          const contactLists = contactData.contact.lists.map(list => list.name); // Extracting list names
+
+          setAllContacts((prevContacts) => [...prevContacts, { firstName: contactName, lastName: "" }]);
+  
+          // const contactData = contactResponse.data;
+          // // Fetch custom fields for each contact
+          // const customFieldsResponse = await axios.get(`http://localhost:3000/contacts`, {
+          //   params: {
+          //     primaryPhone: '+19185175752', // Assuming this is your primary phone number
+          //     phoneNumber: phoneNumber,
+          //   },
+          // });
+          // const customFields = contactResponse.data;
+          // console.log(customFields);
+  
+          // return {
+          //   firstName: contactData.name ? contactData.name.split(' ')[0] : "",
+          //   lastName: contactData.name ? (contactData.name.split(' ')[1] || "") : "",
+          //   phoneNumber: phoneNumber,
+          //   customFields: contactData.customFields || [],
+          // };
+
+          return {
+            name: contactName,
+            lists: contactLists
+          };  
+        } catch (error) {
+          console.error('Error fetching contact:', error.response?.data || error.message);
+          return null;
+        }
+      }));
+  
+      console.log('Fetched contacts:', fetchedContacts);
+  
+      // Filter out null values
+      const validContacts = fetchedContacts.filter((contact: any) => contact !== null);
+
+      validContacts.forEach(contact => {
+        contact.lists.forEach(listName => {
+          const existingListIndex = listsBank.findIndex(list => list.name === listName);
+          if (existingListIndex !== -1) {
+            // List already exists, update size and contacts
+            listsBank[existingListIndex].size++;
+            listsBank[existingListIndex].contacts.push({ firstName: contact.name, lastName: "" });
+          } else {
+            // New list, add to listsBank
+            listsBank.push({
+              name: listName,
+              size: 1,
+              contacts: [{ firstName: contact.name, lastName: "" }]
+            });
+          }
+        });
+      });
+
+      listsBank.sort((a, b) => a.name.localeCompare(b.name));
+      console.log('List bank:', listsBank);
+
+      // Update state if needed
+      setOriginalLists([...listsBank]);
+      setFilteredLists([...listsBank]);
+
+    } catch (error) {
+      console.error('Failed to fetch contacts:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await populateListsArr();
-      setSortedLists(data);
-      setOriginalLists(data);
-      setFilteredLists(data);   
-    };
-    fetchData();
+    fetchContacts();
   }, []);
 
   const [originalLists, setOriginalLists] = useState<{ name: string, size: number, contacts: { firstName: string; lastName: string }[] }[]>([]);
@@ -213,7 +299,7 @@ const ListsScreen = () => {
     
     if (originalListName === "Untitled")
     {
-      listsBank.push({name: updatedList.listName, size: updatedList.size, contacts: updatedList.listContacts})
+      // listsBank.push({name: updatedList.listName, size: updatedList.size, contacts: updatedList.listContacts})
     }
     else {
     for (const list of listsBank)
@@ -226,8 +312,8 @@ const ListsScreen = () => {
           }
       }
     }
-      setFilteredLists(listsBank)
-      setOriginalLists(listsBank)
+      // setFilteredLists(listsBank)
+      // setOriginalLists(listsBank)
   };
 
   const renderItem = ({ item }: { item: { name: string; size: number; contacts: { firstName: string; lastName: string }[] } }) => (

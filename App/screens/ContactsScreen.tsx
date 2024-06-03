@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableOpacity,
   Text,
@@ -7,11 +7,17 @@ import {
   SectionList,
   TextInput,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
+import axios from 'axios';
 import ContactDetails from '../components/Contacts/ContactDetails';
 import Feather from '@expo/vector-icons/Feather';
 import TopNavigation from '../navigation/TopNavigation';
 import ListScreen from './ListScreen';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import io from 'socket.io-client';
+import Icon from '../components/Conversations/Icons';
+import EvilIcons from "@expo/vector-icons/EvilIcons";
 
 const ContactsScreen = () => {
   const [search, setSearch] = useState('');
@@ -20,20 +26,76 @@ const ContactsScreen = () => {
     lastName: string;
   } | null>(null);
   const [selectedScreen, setSelectedScreen] = useState('Contacts'); // New state for selected screen
-  const sortedContacts = [
-    { firstName: 'Aarav', lastName: 'Urgaonkar' },
-    { firstName: 'Arnav', lastName: 'Rastogi' },
-    { firstName: 'Aryan', lastName: 'Gorwade' },
-    { firstName: 'Avery', lastName: 'Li' },
-    { firstName: 'Daniel', lastName: 'Kim' },
-    { firstName: 'Danielle', lastName: 'Koay' },
-    { firstName: 'Jerry', lastName: 'Wu' },
-    { firstName: 'Lena', lastName: 'Ray' },
-    { firstName: 'Natalie', lastName: 'Ung' },
-  ];
-  const [originalContacts, setOriginalContacts] = useState(sortedContacts);
-  const [filteredContacts, setFilteredContacts] = useState(sortedContacts);
+  const [contacts, setContacts] = useState([]);
+  const [originalContacts, setOriginalContacts] = useState([]);
+  const [filteredContacts, setFilteredContacts] = useState([]);
   const [isNewContact, setIsNewContact] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
+
+  const serverURL = "http://localhost:3000";
+
+  const fetchContacts = async () => {
+    try {
+      console.log('Fetching contacts from http://localhost:3000/inbox/+19185175752');
+      const response = await axios.get('http://localhost:3000/inbox/+19185175752');
+      console.log('Response:', response.data);
+      const fetchedContacts = response.data.inbox.items.map((item: any) => ({
+        firstName: item.contact.name.split(' ')[0],
+        lastName: item.contact.name.split(' ')[1],
+        phoneNumber: item.contact.phoneNumber,
+      }));
+      console.log(selectedScreen);
+      setContacts(fetchedContacts);
+      setFilteredContacts(fetchedContacts);
+      setOriginalContacts(fetchedContacts);
+    } catch (error) {
+      console.error('Failed to fetch contacts:', error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchContacts();
+
+    const socket = io(`${serverURL}`, {
+      path: '/socket.io/',
+      transports: ['websocket'],
+      reconnectionAttempts: 10,
+      reconnectionDelay: 3000,
+      rejectUnauthorized: false,
+      secure: true,
+      withCredentials: true,
+    });
+
+    socket.on('connect', () => {
+      console.log('WebSocket connected');
+    });
+
+    socket.on('connect_error', (error) => {
+      console.log('WebSocket connection error:', error);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('WebSocket disconnected:', reason);
+    });
+
+    socket.on('messageEvent', () => {
+      console.log('Received messageEvent, fetching contacts again...');
+      fetchContacts();
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchContacts();
+    }, [])
+  );
 
   const groupContacts = (contacts: { firstName: string; lastName: string }[]) => {
     const grouped: { [key: string]: { firstName: string; lastName: string }[] } = {};
@@ -94,8 +156,33 @@ const ContactsScreen = () => {
   };
 
   const handleNewContact = () => {
-    setIsNewContact(true);
-    setSelectedContact(null);
+    navigation.navigate('CreateContact', {
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      onBackPress: handleBackPress
+      // updateContact: (oldName: string | null, newName: string) => updateContact(oldName, newName),
+    });
+
+    // try {
+    //   const response = await axios.post('http://localhost:3000/contacts', {
+    //     name: 'New Contact',
+    //     phoneNumber: '+15103968494',
+    //     accountPhone: '+19185175752',
+    //     customFields: [],
+    //     blocked: false,
+    //   });
+    //   console.log('New contact created:', response.data);
+    //   navigation.navigate('CreateContact', {
+    //     firstName: '',
+    //     lastName: '',
+    //     phoneNumber: '',
+    //     onBackPress: handleBackPress,
+    //     updateContact: (oldName, newName) => updateContact(null, newName),
+    //   });
+    // } catch (error) {
+    //   console.error('Failed to create a new contact:', error);
+    // }
   };
 
   const renderItem = ({ item }: { item: { firstName: string; lastName: string } }) => (
@@ -111,6 +198,14 @@ const ContactsScreen = () => {
       <Text style={{ fontWeight: 'bold' }}>{title}</Text>
     </View>
   );
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+          <ActivityIndicator size="large" color="#EFE811" />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -135,7 +230,7 @@ const ContactsScreen = () => {
           <View style={styles.topCont}>
             {selectedScreen === 'Contacts' && (
               <TouchableOpacity onPress={handleNewContact}>
-                <Feather name='plus-circle' size={24} color='gray' />
+                <Icon name="CirclePlus" color="#707070" size={24}/>
               </TouchableOpacity>
             )}
           </View>
