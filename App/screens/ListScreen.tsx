@@ -1,128 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity, StyleSheet, Text, View, SafeAreaView, SectionList, TextInput } from "react-native";
-import axios from 'axios';
 import { AntDesign } from '@expo/vector-icons';
 import ListDetails from "./ListDetails";
 import { Ionicons } from "@expo/vector-icons";
-import List from "./ListDetails"
-import Icon from '../components/Conversations/Icons'
+import List from "./ListDetails";
+import Icon from '../components/Conversations/Icons';
+import TopNavigation from "../navigation/TopNavigation";
 
-/*
 // Populates list array
-async function populateListsArr()
-{
-  const [phoneNumbers, setPhoneNumbers] = useState<string[]>([]);
-  const [before, setBefore] = useState<string | null>(null);
-  const [listsArr, setListsArr] = useState<string[]>([]);
-  const [nameListMap, setnameListMap] = useState<{ name: string; listName: string; }[]>([]);
-  const [returnVal, setReturnVal] = useState<{ name: string, size: number, contacts: { firstName: string, lastName: "" }[] }[]>([]);
-
-  // Recursive function to fetch inbox data
-  const fetchInboxData = async (beforeParam: string | null) => {
-      try {
-      const response = await axios.get('localhost:3000/inbox', {
-        params: {
-          "from": "+19185175752",
-          "before": beforeParam, // once obtained then paginate
-        },
-      });
-
-      const data = JSON.parse(JSON.stringify(response.data))
-      const items = data.inbox.items
-      const nums = items.map((item: { contact: { phoneNumber: any; }; }) => item.contact.phoneNumber)
-      setPhoneNumbers((prevNums) => [...prevNums, ...nums]);
-
-      if (data.inbox.pageInfo.hasNextPage) {
-          setBefore(data.inbox.pageInfo.nextPage);
-        } else {
-          setBefore(null);
-        }
-    } catch (error) {
-      console.error('Error fetching inbox data:', error);
-    }
-  };
-
-  // function is re-run whenver a change in before is detected
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchInboxData(before);
-    };
-
-    fetchData();
-  }, [before]);
-
-// Part 2: get list names -
-  const fetchPhoneNumber = async() =>  {
-    for (const phoneNumber of phoneNumbers)
-    {
-      try {
-        const response = await axios.get('localhost:3000/contacts', {
-          params: {
-            "primaryPhone": "+19185175752",
-            "phoneNumber": phoneNumber, 
-          },
-        });
-        const data = JSON.parse(JSON.stringify(response.data))
-        const listName = data.contact.lists.name
-        const contactName = data.contact.name
-        setListsArr((prevNames) => [...prevNames, listName]);
-        setnameListMap((prevMap) => [...prevMap, {name: contactName, listName: listName}])
-      } catch(error)
-      {
-        console.log(error)
-      }
-    }
- }
-
- // populate lists array and sort
- await fetchPhoneNumber()
- setListsArr(listsArr.sort())
-
- // part 3: get capacity
- const toReturn: { name: string; size: number; }[] = []
-
- const fetchListCapacity = async() =>  {
-  for (const list in listsArr)
-  {
-    try {
-      const response = await axios.get('localhost:3000/lists', {
-        params: {
-          "primaryPhone": "+19185175752",
-          "listName": list, 
-        },
-      });
-      const data = JSON.parse(JSON.stringify(response.data))
-      const listSize = data.list.size
-
-      toReturn.push({name: list, size: listSize})
-
-    } catch(error)
-    {
-      console.log(error)
-    }
-  }
-}
- await fetchListCapacity()
-
- // part 4: link names to lists
- for (const list of toReturn)
-  {
-    for (const map of nameListMap)
-    {
-      if (map.name === list.name)
-      {
-        setReturnVal((prevVal) => [...prevVal, {name: list.name, size: list.size, contacts: [{firstName: map.name, lastName: ""}] }])
-      }
-    }
-  }
-
- return toReturn
-}
-*/
-
- async function populateListsArr() {
+async function populateListsArr() {
   return listsBank;
- }
+}
 
 const listsBank = [
   { name: "Developers", size: 6, contacts: [{ firstName: 'Daniel', lastName: 'Kim' }, { firstName: 'Lena', lastName: 'Ray' }, { firstName: 'Arnav', lastName: 'Rastogi' }, { firstName: 'Aarav', lastName: 'Urgaonkar' }, { firstName: 'Avery', lastName: 'Li' }, { firstName: 'Aryan', lastName: 'Gorwade' }] },
@@ -130,7 +18,7 @@ const listsBank = [
   { name: "Managers", size: 2, contacts: [{ firstName: 'Jerry', lastName: 'Wu' }, { firstName: 'Cody', lastName: 'Crow' }] },
 ];
 
-const allContacts = [ 
+const allContacts = [
   { firstName: 'Aarav', lastName: 'Urgaonkar' },
   { firstName: 'Arnav', lastName: 'Rastogi' },
   { firstName: 'Aryan', lastName: 'Gorwade' },
@@ -148,17 +36,16 @@ const ListsScreen = () => {
   const [search, setSearch] = useState("");
   const [selectedList, setSelectedList] = useState<{
     name: string;
-    size: number
+    size: number;
     contacts: { firstName: string; lastName: string }[];
   } | null>(null);
-
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await populateListsArr();
       setSortedLists(data);
       setOriginalLists(data);
-      setFilteredLists(data);   
+      setFilteredLists(data);
     };
     fetchData();
   }, []);
@@ -166,9 +53,10 @@ const ListsScreen = () => {
   const [originalLists, setOriginalLists] = useState<{ name: string, size: number, contacts: { firstName: string; lastName: string }[] }[]>([]);
   const [filteredLists, setFilteredLists] = useState<{ name: string, size: number, contacts: { firstName: string; lastName: string }[] }[]>([]);
   const [isNewList, setIsNewList] = useState<boolean>(false);
+  const [selectedScreen, setSelectedScreen] = useState("Lists");
 
   const groupLists = (lists: { name: string, size: number, contacts: { firstName: string; lastName: string }[] }[]) => {
-    const grouped: { [key: string]: { name: string, size: number, contacts: { firstName: string; lastName: string }[]}[] } = {};
+    const grouped: { [key: string]: { name: string, size: number, contacts: { firstName: string; lastName: string }[] }[] } = {};
     lists.forEach(({ name, size, contacts }) => {
       const firstLetter = name.charAt(0).toUpperCase();
       if (!grouped[firstLetter]) {
@@ -207,27 +95,20 @@ const ListsScreen = () => {
     setSelectedList({ name: "Untitled", size: 0, contacts: [] }); // Clear any selected list
   };
 
-  const updateList = (updatedList: { listName: string, size: number, listContacts: { firstName: string; lastName: string }[]}, originalListName: string) => {
-    // update your state here with the updatedList
-    // go through listsBank and edit the list with the originalListName to have the same values as updatedList
-    
-    if (originalListName === "Untitled")
-    {
-      listsBank.push({name: updatedList.listName, size: updatedList.size, contacts: updatedList.listContacts})
-    }
-    else {
-    for (const list of listsBank)
-      {
-        if (list.name === originalListName)
-          {
-            list.name = updatedList.listName
-            list.size = updatedList.size
-            list.contacts = updatedList.listContacts
-          }
+  const updateList = (updatedList: { listName: string, size: number, listContacts: { firstName: string; lastName: string }[] }, originalListName: string) => {
+    if (originalListName === "Untitled") {
+      listsBank.push({ name: updatedList.listName, size: updatedList.size, contacts: updatedList.listContacts });
+    } else {
+      for (const list of listsBank) {
+        if (list.name === originalListName) {
+          list.name = updatedList.listName;
+          list.size = updatedList.size;
+          list.contacts = updatedList.listContacts;
+        }
       }
     }
-      setFilteredLists(listsBank)
-      setOriginalLists(listsBank)
+    setFilteredLists(listsBank);
+    setOriginalLists(listsBank);
   };
 
   const renderItem = ({ item }: { item: { name: string; size: number; contacts: { firstName: string; lastName: string }[] } }) => (
@@ -255,45 +136,51 @@ const ListsScreen = () => {
     section: { title: string };
   }) => (
     <View style={{ paddingHorizontal: 20 }}>
-    <View style={{ backgroundColor: "white", paddingHorizontal: 15, padding: 20, borderBottomWidth: 1, borderBottomColor: '#E0E0E0' }}>
-      <Text style={{ fontFamily: "Poppins", color: '#A9A9A9' }}>{title}</Text>
-    </View>
+      <View style={{ backgroundColor: "white", paddingHorizontal: 15, padding: 20, borderBottomWidth: 1, borderBottomColor: '#E0E0E0' }}>
+        <Text style={{ fontFamily: "Poppins", color: '#A9A9A9' }}>{title}</Text>
+      </View>
     </View>
   );
 
-  return ( 
+  return (
     <SafeAreaView style={styles.container}>
       {selectedList ? (
         <ListDetails
           listName={selectedList.name}
-          size={selectedList.size} 
-          listContacts={selectedList.contacts}   
-          sortedContacts={allContacts}     
+          size={selectedList.size}
+          listContacts={selectedList.contacts}
+          sortedContacts={allContacts}
           onBackPress={handleBackPress}
           onUpdateList={updateList}
         />
       ) : isNewList ? (
         <ListDetails
           listName='Untitled'
-          size = {0} 
-          listContacts={[]}   
-          sortedContacts={allContacts}     
+          size={0}
+          listContacts={[]}
+          sortedContacts={allContacts}
           onBackPress={handleBackPress}
           onUpdateList={updateList}
         />
       ) : (
         <>
+          <View style={styles.topContainer}>
+            <TouchableOpacity onPress={handleNewList}>
+              <Icon name="CirclePlus" color="#707070" size={24} />
+            </TouchableOpacity>
+          </View>
+          <TopNavigation
+            selectedScreen={selectedScreen}
+            setSelectedScreen={setSelectedScreen}
+          />
           <View style={styles.headerContainer}>
-          <TextInput
+            <TextInput
               placeholder="Search..."
               onChangeText={updateSearch}
               value={search}
               style={styles.searchBar}
             />
-        <TouchableOpacity onPress={handleNewList} style={{ marginLeft: 5, marginRight: 10 }}>
-          <Icon name="CirclePlus" color="#707070" size={24}/>        
-        </TouchableOpacity>
-        </View>
+          </View>
           {Object.keys(sections).length > 0 ? (
             <SectionList
               sections={Object.keys(sections).map((key) => ({
@@ -313,96 +200,84 @@ const ListsScreen = () => {
       )}
     </SafeAreaView>
   );
-  
 };
 
 export default ListsScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: "center",
-    fontFamily: "Poppins",
-      backgroundColor: 'white', // Add this line
-
+    backgroundColor: "#F6F6F6",
+  },
+  topContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    margin: 20,
   },
   searchBar: {
     height: 40,
     borderColor: "gray",
-    flex: 1,
-    margin: 10,
-    fontSize: 18,
-    paddingLeft: 10,
-    borderRadius: 5, // Adjust this to make the edges slightly rounded
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
     fontFamily: "Poppins",
-    backgroundColor: '#E8E8E8', // Add this line to shade the search bar light gray
-  },
-  backButtonText: {
-    color: 'black',
-    fontSize: 16,
-    marginRight: 10,
-    fontFamily: "Poppins",
-  },
-  topCont: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20
   },
   listItemContainer: {
-    padding: 13,
-    borderBottomColor: '#E0E0E0',
-    borderBottomWidth: 1, // Change this to your desired width
-    marginHorizontal: 20, 
+    paddingHorizontal: 20,
+    backgroundColor: "white",
   },
   listItemContent: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderRadius: 5,
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.20,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   listItemName: {
-    fontSize: 17,
     fontFamily: "Poppins",
+    fontSize: 16,
+    color: '#303030',
   },
   listItemDetails: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginLeft: 4,
+    flexDirection: "column",
+    paddingHorizontal: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   listItemSize: {
-    marginRight: 8,
-    color: 'gray',
+    fontSize: 14,
     fontFamily: "Poppins",
+    color: '#707070',
   },
   listItemSize1: {
-    fontStyle: 'italic',
-    marginRight: -10,
-    color: 'gray',
-  },
-  listNameInput: {
-    flex: 1,
-    height: 40,
-    borderWidth: 1,
-    fontSize: 18,
-    borderColor: 'gray',
-    borderRadius: 20, // Increase the borderRadius value
-    paddingHorizontal: 15,
-    marginHorizontal: 10,
+    fontSize: 14,
     fontFamily: "Poppins",
+    color: '#404040',
   },
   headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   emptyContainer: {
     flex: 1,
-    marginTop: 20, // adjust this value as needed
-    marginLeft: 20, // adjust this value as needed
-    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
     fontFamily: "Poppins",
+    color: '#A9A9A9',
   },
 });

@@ -10,7 +10,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-
+import Icon from "components/Conversations/Icons";
 
 interface Contact {
  firstName: string;
@@ -75,7 +75,7 @@ const ContactDetails: React.FC<Contact> = ({
    <SafeAreaView style={styles.container}>
      <View style={styles.backEditButtons}>
        <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
-         <Ionicons name="arrow-back" size={24} color="blue" />
+            <Icon name="ArrowLeft" color="blue" size={24}/>
        </TouchableOpacity>
 
 
